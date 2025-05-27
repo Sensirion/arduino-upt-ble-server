@@ -1,0 +1,5 @@
+.pio
+examples/**/*.cpp
+.vscode/
+.idea/
+lib/
