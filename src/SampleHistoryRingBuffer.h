@@ -34,34 +34,92 @@
 #include "ByteArray.h"
 #include "Sample.h"
 
-const static size_t SAMPLE_HISTORY_RING_BUFFER_SIZE_BYTES = 30000;
+static constexpr size_t SAMPLE_HISTORY_RING_BUFFER_SIZE_BYTES = 30000;
 
 // Logs Samples over time to be downloaded
-class SampleHistoryRingBuffer
-    : protected ByteArray<SAMPLE_HISTORY_RING_BUFFER_SIZE_BYTES> {
+template <size_t BUFFER_SIZE = SAMPLE_HISTORY_RING_BUFFER_SIZE_BYTES>
+class SampleHistoryRingBuffer : protected ByteArray<BUFFER_SIZE> {
 public:
-  void putSample(const Sample &sample);
+  void putSample(const Sample &sample) {
+    // iterate outSampleIndex if overwriting
+    if (isFull()) {
+      mTail = nextIndex(mTail);
+    }
+    // copy byte wise
+    writeSample(sample);
 
-  void setSampleSize(size_t sampleSize);
+    // iterate mHead
+    mHead = nextIndex(mHead);
+  };
 
-  uint32_t numberOfSamplesInHistory() const;
+  void setSampleSize(const size_t sampleSize) {
+    mSampleSizeBytes = sampleSize;
+    reset();
+  };
 
-  bool isFull() const;
+  [[nodiscard]] uint32_t numberOfSamplesInHistory() const {
+    if (mHead >= mTail) {
+      return mHead - mTail;
+    }
+    return sizeInSamples() - (mTail - mHead);
+  };
 
-  void startReadOut(uint32_t nrOfSamples);
+  [[nodiscard]] bool isFull() const { return nextIndex(mHead) == mTail; };
 
-  Sample readOutNextSample(bool &allSamplesRead);
+  void startReadOut(const uint32_t nrOfSamples) {
+    if (nrOfSamples >= numberOfSamplesInHistory()) {
+      mSampleReadOutIndex = mTail;
+    } else {
+      mSampleReadOutIndex = mHead - nrOfSamples;
+      if (mSampleReadOutIndex < 0) {
+        mSampleReadOutIndex = mSampleReadOutIndex + sizeInSamples();
+      }
+    }
+  };
 
-  void reset();
+  // May give out an invalid sample if called on an empty sample history
+  Sample readOutNextSample(bool &allSamplesRead) {
+    const Sample sample = readSample(mSampleReadOutIndex);
+    if (!allSamplesRead) {
+      mSampleReadOutIndex = nextIndex(mSampleReadOutIndex);
+    }
+    allSamplesRead = (mSampleReadOutIndex == mHead);
+    return sample;
+  };
+
+  void reset() {
+    mHead = 0;
+    mTail = 0;
+    mSampleReadOutIndex = 0;
+  };
 
 private:
-  uint32_t nextIndex(uint32_t index) const;
+  [[nodiscard]] uint32_t nextIndex(const uint32_t index) const {
+    return (index + 1) % sizeInSamples();
+  };
 
-  size_t sizeInSamples() const;
+  [[nodiscard]] size_t sizeInSamples() const {
+    if (mSampleSizeBytes == 0) {
+      return 0;
+    }
+    return (BUFFER_SIZE / mSampleSizeBytes);
+  };
 
-  void writeSample(const Sample &sample);
+  void writeSample(const Sample &sample) {
+    for (int byteIndex = 0; byteIndex < mSampleSizeBytes; ++byteIndex) {
+      this->mData[mHead * mSampleSizeBytes + byteIndex] =
+          sample.getByte(byteIndex);
+    }
+  };
 
-  Sample readSample(uint32_t sampleIndex) const;
+  [[nodiscard]] Sample readSample(const uint32_t sampleIndex) const {
+    Sample sample;
+    for (size_t i = 0; i < mSampleSizeBytes; ++i) {
+      const uint8_t byte = this->getByte((sampleIndex * mSampleSizeBytes) + i);
+      sample.setByte(byte, i);
+    }
+    return sample;
+  };
 
 private:
   uint32_t mHead = 0;

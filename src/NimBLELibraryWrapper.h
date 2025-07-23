@@ -31,23 +31,18 @@
 #ifndef NIM_BLE_LIBRARY_WRAPPER_H
 #define NIM_BLE_LIBRARY_WRAPPER_H
 
-#include "IBLELibraryWrapper.h"
+#include "IBleLibraryWrapper.h"
 #include <NimBLECharacteristic.h>
 
 struct WrapperPrivateData;
 
-class __attribute__((unused)) NimBLELibraryWrapper : public IBLELibraryWrapper {
+class __attribute__((unused)) NimBLELibraryWrapper : public IBleLibraryWrapper {
 public:
   /**
    * @brief Construct a new Nim BLE Library Wrapper
-   * @note To allow the client, e.g. MyAmbience app, to discover a change in
-   * the provided services switch Bluetooth off and then on again on your
+   * @note To allow the client, e.g., MyAmbience app, to discover a change in
+   * the provided services, switch Bluetooth off and then on again on your
    * client device.
-   *
-   * @param enableWifiSettings if true, wifi settings service will be
-   * initialized
-   * @param enableBatteryService if true, battery level service will be
-   * initialized
    */
   NimBLELibraryWrapper();
 

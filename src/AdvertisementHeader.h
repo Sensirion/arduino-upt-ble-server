@@ -33,7 +33,7 @@
 
 #include "ByteArray.h"
 
-const static size_t ADVERTISEMENT_HEADER_SIZE_BYTES = 6;
+static constexpr size_t ADVERTISEMENT_HEADER_SIZE_BYTES = 6;
 
 class AdvertisementHeader : public ByteArray<ADVERTISEMENT_HEADER_SIZE_BYTES> {
 public:

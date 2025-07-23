@@ -33,154 +33,158 @@
 
 #include "AdvertisementHeader.h"
 #include "Download.h"
-#include "IBLELibraryWrapper.h"
+#include "IBleLibraryWrapper.h"
 #include "IProviderCallbacks.h"
 #include "SampleHistoryRingBuffer.h"
 #include "Sensirion_UPT_Core.h"
 #include <string>
 #include <vector>
 
+#ifndef BLE_SERVER_HISTORY_BUFFER_SIZE
+#define BLE_SERVER_HISTORY_BUFFER_SIZE SAMPLE_HISTORY_RING_BUFFER_SIZE_BYTES
+#endif
+
 enum class BleServerFeatures : uint8_t {
-    None = 0,
-    EnableWiFiSetting = 1 << 0,
-    EnableBatteryService = 1 << 1,
-    EnableFrcService = 1 << 2,
-    EnableAltDeviceNameSetting = 1 << 3
+  None = 0,
+  EnableWiFiSetting = 1 << 0,
+  EnableBatteryService = 1 << 1,
+  EnableFrcService = 1 << 2,
+  EnableAltDeviceNameSetting = 1 << 3
 };
 
 inline BleServerFeatures operator|(BleServerFeatures a, BleServerFeatures b) {
-    return static_cast<BleServerFeatures>(static_cast<uint8_t>(a) |
-                                          static_cast<uint8_t>(b));
+  return static_cast<BleServerFeatures>(static_cast<uint8_t>(a) |
+                                        static_cast<uint8_t>(b));
 }
 
-inline void operator|=(BleServerFeatures& a, const BleServerFeatures b) {
-    a = a | b;
+inline void operator|=(BleServerFeatures &a, const BleServerFeatures b) {
+  a = a | b;
 }
 
 inline bool operator==(BleServerFeatures a, BleServerFeatures b) {
-    return (static_cast<uint8_t>(a) & static_cast<uint8_t>(b)) != 0;
+  return (static_cast<uint8_t>(a) & static_cast<uint8_t>(b)) != 0;
 }
 
-class __attribute__((unused)) DataProvider final : public IProviderCallbacks {
-  public:
-    __attribute__((unused)) explicit DataProvider(
-        IBLELibraryWrapper& libraryWrapper, DataType dataType = T_RH_V3,
-        BleServerFeatures features = BleServerFeatures::None)
-        : BLELibrary(libraryWrapper),
-          mSampleConfig(sampleConfigSelector.at(dataType)) {
-        if (features == BleServerFeatures::EnableWiFiSetting) {
-            mEnableWifiSettings = true;
-        }
-        if (features == BleServerFeatures::EnableBatteryService) {
-            mEnableBatteryService = true;
-        }
-        if (features == BleServerFeatures::EnableFrcService) {
-            mEnableFRCService = true;
-        }
-        if (features == BleServerFeatures::EnableAltDeviceNameSetting) {
-            mEnableAltDeviceName = true;
-        }
-    };
+class DataProvider final : public IProviderCallbacks {
+public:
+  explicit DataProvider(
+      IBleLibraryWrapper &libraryWrapper, const DataType dataType = T_RH_V3,
+      const BleServerFeatures features = BleServerFeatures::None)
+      : mBleLibrary(libraryWrapper),
+        mSampleConfig(sampleConfigSelector.at(dataType)) {
+    if (features == BleServerFeatures::EnableWiFiSetting) {
+      mEnableWifiSettings = true;
+    }
+    if (features == BleServerFeatures::EnableBatteryService) {
+      mEnableBatteryService = true;
+    }
+    if (features == BleServerFeatures::EnableFrcService) {
+      mEnableFRCService = true;
+    }
+    if (features == BleServerFeatures::EnableAltDeviceNameSetting) {
+      mEnableAltDeviceName = true;
+    }
+  };
 
-    void begin();
+  void begin();
 
-    __attribute__((unused)) String getDeviceIdString() const;
+  [[nodiscard]] String getDeviceIdString() const;
 
-    __attribute__((unused)) void setSampleConfig(DataType dataType);
+  void setSampleConfig(DataType dataType);
 
-    __attribute__((unused)) void
-    writeValueToCurrentSample(float value, SignalType signalType);
+  void writeValueToCurrentSample(float value, SignalType signalType);
 
-    __attribute__((unused)) void commitSample();
+  void commitSample();
 
-    __attribute__((unused)) void setBatteryLevel(int value) const;
+  void setBatteryLevel(int value) const;
 
-    __attribute__((unused)) void handleDownload();
+  void handleDownload();
 
-    __attribute__((unused)) bool isDownloading() const;
+  [[nodiscard]] bool isDownloading() const;
 
-    __attribute__((unused)) bool isFRCRequested() const;
+  [[nodiscard]] bool isFRCRequested() const;
 
-    __attribute__((unused)) void completeFRCRequest();
+  void completeFRCRequest();
 
-    __attribute__((unused)) uint32_t getReferenceCO2Level() const;
+  [[nodiscard]] uint32_t getReferenceCO2Level() const;
 
-    /*
-     * enableAltDeviceName must be called before begin() to ensure
-     * the characteristic is created.
-     * Initially, the alternative device name is empty.
-     * Use setAltDeviceName to change the device name.
-     */
-    __attribute__((unused)) void enableAltDeviceName();
+  /*
+   * enableAltDeviceName must be called before begin() to ensure
+   * the characteristic is created.
+   * Initially, the alternative device name is empty.
+   * Use setAltDeviceName to change the device name.
+   */
+  void enableAltDeviceName();
 
-    __attribute__((unused)) std::string getAltDeviceName();
+  std::string getAltDeviceName();
 
-    void setAltDeviceName(std::string altDeviceName);
+  void setAltDeviceName(std::string altDeviceName);
 
-    __attribute__((unused)) void registerWifiChangedCallback(
-        const std::function<void(std::string, std::string)>& callback);
+  void registerWifiChangedCallback(
+      const std::function<void(std::string, std::string)> &callback);
 
-    __attribute__((unused)) void registerDeviceNameChangeCallback(
-        const std::function<void(std::string)>& callback);
+  void registerDeviceNameChangeCallback(
+      const std::function<void(std::string)> &callback);
 
-  private:
-    IBLELibraryWrapper& BLELibrary;
+private:
+  IBleLibraryWrapper &mBleLibrary;
 
-    Sample mCurrentSample;
-    AdvertisementHeader mAdvertisementHeader;
-    SampleHistoryRingBuffer mSampleHistory;
-    uint32_t mNrOfSamplesRequested = 0;
-    DownloadState mDownloadState = INACTIVE;
-    uint16_t mDownloadSequenceIdx = 0;  // the first packet is the header
-    uint32_t mNumberOfSamplesToDownload = 0;
-    uint32_t mNumberOfSamplePacketsToDownload = 0;
-    bool mFrcRequested = false;
-    uint32_t mReferenceCo2Level = 0;
-    std::string mAltDeviceName;
+  Sample mCurrentSample;
+  AdvertisementHeader mAdvertisementHeader;
+  SampleHistoryRingBuffer<BLE_SERVER_HISTORY_BUFFER_SIZE> mSampleHistory;
+  uint32_t mNrOfSamplesRequested = 0;
+  DownloadState mDownloadState = INACTIVE;
+  uint16_t mDownloadSequenceIdx = 0; // the first packet is the header
+  uint32_t mNumberOfSamplesToDownload = 0;
+  uint32_t mNumberOfSamplePacketsToDownload = 0;
+  bool mFrcRequested = false;
+  uint32_t mReferenceCo2Level = 0;
+  std::string mAltDeviceName;
 
-    bool mEnableWifiSettings = false;
-    bool mEnableBatteryService = false;
-    bool mEnableFRCService = false;
-    bool mEnableAltDeviceName = false;
+  bool mEnableWifiSettings = false;
+  bool mEnableBatteryService = false;
+  bool mEnableFRCService = false;
+  bool mEnableAltDeviceName = false;
 
-    SampleConfig mSampleConfig;
-    uint64_t mHistoryIntervalMilliSeconds = 600000;  // = 10 minutes
-    uint64_t mLatestHistoryTimeStamp = 0;
-    uint64_t mLatestHistoryTimeStampAtDownloadStart = 0;
+  SampleConfig mSampleConfig;
+  uint64_t mHistoryIntervalMilliSeconds = 600000; // = 10 minutes
+  uint64_t mLatestHistoryTimeStamp = 0;
+  uint64_t mLatestHistoryTimeStampAtDownloadStart = 0;
 
-    std::string mWiFiSsid;
-    std::vector<std::function<void(std::string, std::string)>>
-        mWiFiChangedCallbacks;
-    std::vector<std::function<void(std::string)>> mDeviceNameChangeCallbacks;
+  std::string mWiFiSsid;
+  std::vector<std::function<void(std::string, std::string)>>
+      mWiFiChangedCallbacks;
+  std::vector<std::function<void(std::string)>> mDeviceNameChangeCallbacks;
 
-  private:
-    std::string buildAdvertisementData();
+private:
+  std::string buildAdvertisementData();
 
-    DownloadHeader buildDownloadHeader() const;
+  [[nodiscard]] DownloadHeader buildDownloadHeader() const;
 
-    DownloadPacket buildDownloadPacket();
+  DownloadPacket buildDownloadPacket();
 
-    uint32_t numberOfPacketsRequired(uint32_t numberOfSamples) const;
+  [[nodiscard]] uint32_t
+  numberOfPacketsRequired(uint32_t numberOfSamples) const;
 
-    void setupBLEInfrastructure();
+  void setupBLEInfrastructure();
 
-  private:
-    // ProviderCallbacks
-    void onHistoryIntervalChange(uint32_t interval) override;
+private:
+  // ProviderCallbacks
+  void onHistoryIntervalChange(uint32_t interval) override;
 
-    void onConnectionEvent() override;
+  void onConnectionEvent() override;
 
-    void onDownloadRequest() override;
+  void onDownloadRequest() override;
 
-    void onWifiSsidChange(std::string ssid) override;
+  void onWifiSsidChange(std::string ssid) override;
 
-    void onWifiPasswordChange(std::string pwd) override;
+  void onWifiPasswordChange(std::string pwd) override;
 
-    void onFRCRequest(uint16_t reference_co2_level) override;
+  void onFRCRequest(uint16_t referenceCo2Level) override;
 
-    void onNrOfSamplesRequest(uint32_t nr_of_samples) override;
+  void onNrOfSamplesRequest(uint32_t nrOfSamples) override;
 
-    void onAltDeviceNameChange(std::string altDeviceName) override;
+  void onAltDeviceNameChange(std::string altDeviceName) override;
 };
 
 #endif /* DATA_PROVIDER_H */
