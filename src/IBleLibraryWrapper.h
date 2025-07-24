@@ -34,42 +34,35 @@
 #include "IProviderCallbacks.h"
 #include <string>
 
-const char *const GADGET_NAME = "S";
+const auto GADGET_NAME = "S";
 
 // when adding a new characteristic, make sure to
 // write numbers in lower case and to increase
 // the constants MAX_NUMBER_OF_xxx
 
-static const char *const DOWNLOAD_SERVICE_UUID =
+static const auto DOWNLOAD_SERVICE_UUID =
     "00008000-b38d-4985-720e-0f993a68ee41";
-static const char *const SAMPLE_HISTORY_INTERVAL_UUID =
+static const auto SAMPLE_HISTORY_INTERVAL_UUID =
     "00008001-b38d-4985-720e-0f993a68ee41";
-static const char *const NUMBER_OF_SAMPLES_UUID =
+static const auto NUMBER_OF_SAMPLES_UUID =
     "00008002-b38d-4985-720e-0f993a68ee41";
-static const char *const REQUESTED_SAMPLES_UUID =
+static const auto REQUESTED_SAMPLES_UUID =
     "00008003-b38d-4985-720e-0f993a68ee41";
-static const char *const DOWNLOAD_PACKET_UUID =
-    "00008004-b38d-4985-720e-0f993a68ee41";
+static const auto DOWNLOAD_PACKET_UUID = "00008004-b38d-4985-720e-0f993a68ee41";
 
-static const char *const SETTINGS_SERVICE_UUID =
+static const auto SETTINGS_SERVICE_UUID =
     "00008100-b38d-4985-720e-0f993a68ee41";
-static const char *const WIFI_SSID_UUID =
-    "00008171-b38d-4985-720e-0f993a68ee41";
-static const char *const WIFI_PWD_UUID = "00008172-b38d-4985-720e-0f993a68ee41";
-static const char *const ALT_DEVICE_NAME_UUID =
-    "00008120-b38d-4985-720e-0f993a68ee41";
-static const char *const BATTERY_SERVICE_UUID =
-    "0000180f-0000-1000-8000-00805f9b34fb";
-static const char *const BATTERY_LEVEL_UUID =
-    "00002a19-0000-1000-8000-00805f9b34fb";
+static const auto WIFI_SSID_UUID = "00008171-b38d-4985-720e-0f993a68ee41";
+static const auto WIFI_PWD_UUID = "00008172-b38d-4985-720e-0f993a68ee41";
+static const auto ALT_DEVICE_NAME_UUID = "00008120-b38d-4985-720e-0f993a68ee41";
+static const auto BATTERY_SERVICE_UUID = "0000180f-0000-1000-8000-00805f9b34fb";
+static const auto BATTERY_LEVEL_UUID = "00002a19-0000-1000-8000-00805f9b34fb";
 
-static const char *const SCD_SERVICE_UUID =
-    "00007000-b38d-4985-720e-0f993a68ee41";
-static const char *const SCD_FRC_REQUEST_UUID =
-    "00007004-b38d-4985-720e-0f993a68ee41";
+static const auto SCD_SERVICE_UUID = "00007000-b38d-4985-720e-0f993a68ee41";
+static const auto SCD_FRC_REQUEST_UUID = "00007004-b38d-4985-720e-0f993a68ee41";
 
-static const unsigned int MAX_NUMBER_OF_SERVICES = 4;
-static const unsigned int MAX_NUMBER_OF_CHARACTERISTICS = 12;
+static constexpr unsigned int MAX_NUMBER_OF_SERVICES = 4;
+static constexpr unsigned int MAX_NUMBER_OF_CHARACTERISTICS = 12;
 
 enum Permission {
   READWRITE_PERMISSION,
@@ -79,9 +72,9 @@ enum Permission {
 };
 
 // abstract class
-class IBLELibraryWrapper {
+class IBleLibraryWrapper {
 public:
-  virtual ~IBLELibraryWrapper() = default;
+  virtual ~IBleLibraryWrapper() = default;
 
   virtual void init() = 0;
 

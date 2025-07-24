@@ -35,43 +35,43 @@
 #include <array>
 #include <string>
 
-// Must explicitly instantiate template in Samples.cpp before usage
+// Must explicitly instantiate a template in Samples.cpp before usage
 template <size_t SIZE> class ByteArray {
 public:
   std::string getDataString() {
-    std::string stringData(reinterpret_cast<char *>(_data.data()),
-                           _data.size());
+    std::string stringData(reinterpret_cast<char *>(mData.data()),
+                           mData.size());
     return stringData;
   }
-  const std::array<uint8_t, SIZE> &getDataArray() const { return _data; }
+  const std::array<uint8_t, SIZE> &getDataArray() const { return mData; }
 
-  uint8_t getByte(size_t index) const { return _data[index]; }
+  uint8_t getByte(size_t index) const { return mData[index]; }
 
 protected:
   void writeByte(uint8_t byte, size_t position) {
     assert(position < SIZE);
-    _data[position] = byte;
+    mData[position] = byte;
   }
-  void write16BitLittleEndian(uint16_t value, size_t position) {
+  void write16BitLittleEndian(const uint16_t value, size_t position) {
     assert(position < SIZE - 1);
-    _data[position] = static_cast<uint8_t>(value);
-    _data[position + 1] = static_cast<uint8_t>(value >> 8);
+    mData[position] = static_cast<uint8_t>(value);
+    mData[position + 1] = static_cast<uint8_t>(value >> 8);
   }
 
   __attribute__((unused)) void write16BitBigEndian(uint16_t value,
                                                    size_t position) {
     assert(position < SIZE - 1);
-    _data[position + 1] = static_cast<uint8_t>(value);
-    _data[position] = static_cast<uint8_t>(value >> 8);
+    mData[position + 1] = static_cast<uint8_t>(value);
+    mData[position] = static_cast<uint8_t>(value >> 8);
   }
-  void write32BitLittleEndian(uint32_t value, size_t position) {
+  void write32BitLittleEndian(const uint32_t value, size_t position) {
     assert(position < SIZE - 3);
-    _data[position] = static_cast<uint8_t>(value);
-    _data[position + 1] = static_cast<uint8_t>(value >> 8);
-    _data[position + 2] = static_cast<uint8_t>(value >> 16);
-    _data[position + 3] = static_cast<uint8_t>(value >> 24);
+    mData[position] = static_cast<uint8_t>(value);
+    mData[position + 1] = static_cast<uint8_t>(value >> 8);
+    mData[position + 2] = static_cast<uint8_t>(value >> 16);
+    mData[position + 3] = static_cast<uint8_t>(value >> 24);
   }
-  std::array<uint8_t, SIZE> _data = {};
+  std::array<uint8_t, SIZE> mData = {};
 };
 
 #endif /* BYTE_ARRAY_H */

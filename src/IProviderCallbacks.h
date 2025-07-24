@@ -41,8 +41,8 @@ public:
   virtual void onHistoryIntervalChange(uint32_t interval) = 0;
   virtual void onWifiSsidChange(std::string ssid) = 0;
   virtual void onWifiPasswordChange(std::string pwd) = 0;
-  virtual void onFRCRequest(uint16_t reference_co2_level) = 0;
-  virtual void onNrOfSamplesRequest(uint32_t nr_of_samples) = 0;
+  virtual void onFRCRequest(uint16_t referenceCo2Level) = 0;
+  virtual void onNrOfSamplesRequest(uint32_t nrOfSamples) = 0;
   virtual void onAltDeviceNameChange(std::string altDeviceName) = 0;
 };
 

@@ -4,8 +4,8 @@
 
 uint NimBLELibraryWrapper::mNumberOfInstances = 0;
 
-struct WrapperPrivateData : public BLECharacteristicCallbacks,
-                            BLEServerCallbacks {
+struct WrapperPrivateData final : BLECharacteristicCallbacks,
+                                  BLEServerCallbacks {
   NimBLEAdvertising *pNimBLEAdvertising{};
   bool BLEDeviceRunning = false;
 
@@ -44,7 +44,7 @@ void WrapperPrivateData::onDisconnect(BLEServer *serverInst) {
 
 void WrapperPrivateData::onSubscribe(NimBLECharacteristic *pCharacteristic,
                                      ble_gap_conn_desc *desc,
-                                     uint16_t subValue) {
+                                     const uint16_t subValue) {
   if ((providerCallbacks != nullptr) && (subValue == 1)) {
     providerCallbacks->onDownloadRequest();
   }
@@ -56,8 +56,8 @@ void WrapperPrivateData::onWrite(BLECharacteristic *characteristic) {
   }
 
   if (characteristic->getUUID().toString() == SAMPLE_HISTORY_INTERVAL_UUID) {
-    std::string value = characteristic->getValue();
-    uint32_t sampleIntervalMs =
+    const std::string value = characteristic->getValue();
+    const uint32_t sampleIntervalMs =
         value[0] | (value[1] << 8) | (value[2] << 16) | (value[3] << 24);
     providerCallbacks->onHistoryIntervalChange(sampleIntervalMs);
   } else if (characteristic->getUUID().toString() == WIFI_SSID_UUID) {
@@ -65,16 +65,16 @@ void WrapperPrivateData::onWrite(BLECharacteristic *characteristic) {
   } else if (characteristic->getUUID().toString() == WIFI_PWD_UUID) {
     providerCallbacks->onWifiPasswordChange(characteristic->getValue());
   } else if (characteristic->getUUID().toString() == SCD_FRC_REQUEST_UUID) {
-    std::string value = characteristic->getValue();
+    const std::string value = characteristic->getValue();
     // co2 level is encoded in lower two bytes, little endian
     // the first two bytes are obfuscation and can be ignored
-    uint16_t referenceCO2Level = value[2] | (value[3] << 8);
+    const uint16_t referenceCO2Level = value[2] | (value[3] << 8);
     providerCallbacks->onFRCRequest(referenceCO2Level);
   } else if (characteristic->getUUID().toString() == REQUESTED_SAMPLES_UUID) {
-    std::string value = characteristic->getValue();
-    uint32_t nr_of_samples =
+    const std::string value = characteristic->getValue();
+    const uint32_t nrOfSamples =
         value[0] | (value[1] << 8) | (value[2] << 16) | (value[3] << 24);
-    providerCallbacks->onNrOfSamplesRequest(nr_of_samples);
+    providerCallbacks->onNrOfSamplesRequest(nrOfSamples);
   } else if (characteristic->getUUID().toString() == ALT_DEVICE_NAME_UUID) {
     providerCallbacks->onAltDeviceNameChange(characteristic->getValue());
   }
@@ -83,17 +83,17 @@ void WrapperPrivateData::onWrite(BLECharacteristic *characteristic) {
 WrapperPrivateData *NimBLELibraryWrapper::mData = nullptr;
 
 NimBLELibraryWrapper::NimBLELibraryWrapper() {
-  if (NimBLELibraryWrapper::mNumberOfInstances == 0) {
+  if (mNumberOfInstances == 0) {
     mData = new WrapperPrivateData();
-    ++NimBLELibraryWrapper::mNumberOfInstances;
+    ++mNumberOfInstances;
   }
 }
 
 NimBLELibraryWrapper::~NimBLELibraryWrapper() {
-  if (NimBLELibraryWrapper::mNumberOfInstances == 1) {
+  if (mNumberOfInstances == 1) {
     release();
     delete mData;
-    --NimBLELibraryWrapper::mNumberOfInstances;
+    --mNumberOfInstances;
   }
 }
 
@@ -118,6 +118,10 @@ void NimBLELibraryWrapper::init() {
   // Helps with iPhone connection issues (copy/paste)
   mData->pNimBLEAdvertising->setMinPreferred(0x06);
   mData->pNimBLEAdvertising->setMaxPreferred(0x12);
+
+  // Set interval to 1 s. Unit is in 0.625 ms.
+  mData->pNimBLEAdvertising->setMinInterval(1600);
+  mData->pNimBLEAdvertising->setMaxInterval(1600);
 }
 
 void NimBLELibraryWrapper::createServer() {
@@ -137,7 +141,7 @@ bool NimBLELibraryWrapper::createService(const char *uuid) {
 
 bool NimBLELibraryWrapper::createCharacteristic(const char *serviceUuid,
                                                 const char *characteristicUuid,
-                                                Permission permission) {
+                                                const Permission permission) {
   NimBLEService *service = lookupService(serviceUuid);
   if (service == nullptr) { // invalid service uuid
     return false;
@@ -145,20 +149,20 @@ bool NimBLELibraryWrapper::createCharacteristic(const char *serviceUuid,
   for (auto &characteristic : mData->characteristics) {
     if (characteristic == nullptr) {
       switch (permission) {
-      case (Permission::READWRITE_PERMISSION):
+      case READWRITE_PERMISSION:
         characteristic = service->createCharacteristic(characteristicUuid);
         characteristic->setCallbacks(mData);
         return true;
-      case (Permission::READ_PERMISSION):
+      case READ_PERMISSION:
         characteristic = service->createCharacteristic(characteristicUuid,
                                                        NIMBLE_PROPERTY::READ);
         return true;
-      case (Permission::WRITE_PERMISSION):
+      case WRITE_PERMISSION:
         characteristic = service->createCharacteristic(characteristicUuid,
                                                        NIMBLE_PROPERTY::WRITE);
         characteristic->setCallbacks(mData);
         return true;
-      case (Permission::NOTIFY_PERMISSION):
+      case NOTIFY_PERMISSION:
         characteristic = service->createCharacteristic(characteristicUuid,
                                                        NIMBLE_PROPERTY::NOTIFY);
         characteristic->setCallbacks(mData);
@@ -259,7 +263,7 @@ void NimBLELibraryWrapper::setProviderCallbacks(
 NimBLECharacteristic *
 NimBLELibraryWrapper::lookupCharacteristic(const char *uuid) {
   // NimBLECharacteristic* pCharacteristic = nullptr;
-  for (auto &characteristic : mData->characteristics) {
+  for (const auto &characteristic : mData->characteristics) {
     if (characteristic == nullptr) {
       continue;
     }
@@ -271,7 +275,7 @@ NimBLELibraryWrapper::lookupCharacteristic(const char *uuid) {
 }
 
 NimBLEService *NimBLELibraryWrapper::lookupService(const char *uuid) {
-  for (auto &service : mData->services) {
+  for (const auto &service : mData->services) {
     if (service == nullptr) {
       continue;
     }
