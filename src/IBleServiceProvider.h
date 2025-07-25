@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, Sensirion AG
+ * Copyright (c) 2025, Sensirion AG
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,18 +28,30 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef PROVIDER_CALLBACKS_H
-#define PROVIDER_CALLBACKS_H
+#ifndef I_BLE_SERVICE_PROVIDER_H
+#define I_BLE_SERVICE_PROVIDER_H
+#include "IBleServiceLibrary.h"
 
-#include <string>
+class IBleServiceProvider {
+  /*
+   * Responsibilities of a Ble Service Provider
+   *
+   * - Setup BLE services and characteristics.
+   * - Register callbacks on the BLE implementation.
+   * - Provide convenience functions for the user.
+   * - Handle internal states.
+   */
 
-class IProviderCallbacks {
 public:
-  virtual ~IProviderCallbacks() = default;
+  virtual ~IBleServiceProvider() = default;
 
-  virtual void onConnect() = 0;
-  virtual void onDisconnect() = 0;
-  virtual void onSubscribe(const std::string &uuid, uint16_t subValue) = 0;
+  /*
+   * Create BLE services and characteristics.
+   * Set initial values on characteristics.
+   * Start BLE services
+   * Register callbacks
+   */
+  virtual bool init(IBleServiceLibrary &bleLibrary) = 0;
 };
 
-#endif /* PROVIDER_CALLBACKS_H */
+#endif // I_BLE_SERVICE_PROVIDER_H

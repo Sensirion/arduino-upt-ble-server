@@ -32,17 +32,20 @@
 #define NIM_BLE_LIBRARY_WRAPPER_H
 
 #include "IBleLibraryWrapper.h"
+#include "IBleServiceLibrary.h"
+
 #include <NimBLECharacteristic.h>
 
 struct WrapperPrivateData;
 
-class __attribute__((unused)) NimBLELibraryWrapper : public IBleLibraryWrapper {
+class NimBLELibraryWrapper final : public IBleLibraryWrapper {
 public:
   /**
    * @brief Construct a new Nim BLE Library Wrapper
    * @note To allow the client, e.g., MyAmbience app, to discover a change in
    * the provided services, switch Bluetooth off and then on again on your
    * client device.
+   *
    */
   NimBLELibraryWrapper();
 
@@ -84,6 +87,9 @@ public:
   std::string characteristicGetValue(const char *uuid) override;
 
   bool characteristicNotify(const char *uuid) override;
+
+  void registerCharacteristicCallback(const char *uuid,
+                                      const callback_t &callback) override;
 
   void setProviderCallbacks(IProviderCallbacks *providerCallbacks) override;
 

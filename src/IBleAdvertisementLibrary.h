@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, Sensirion AG
+ * Copyright (c) 2025, Sensirion AG
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,18 +28,20 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef PROVIDER_CALLBACKS_H
-#define PROVIDER_CALLBACKS_H
 
+#ifndef I_BLE_ADVERTISEMENT_LIBRARY_H
+#define I_BLE_ADVERTISEMENT_LIBRARY_H
 #include <string>
 
-class IProviderCallbacks {
+class IBleAdvertisementLibrary {
 public:
-  virtual ~IProviderCallbacks() = default;
+  virtual ~IBleAdvertisementLibrary() = default;
 
-  virtual void onConnect() = 0;
-  virtual void onDisconnect() = 0;
-  virtual void onSubscribe(const std::string &uuid, uint16_t subValue) = 0;
+  // set device name and manufacturer data
+  virtual void setAdvertisingData(const std::string &data) = 0;
+
+  virtual void startAdvertising() = 0;
+
+  virtual void stopAdvertising() = 0;
 };
-
-#endif /* PROVIDER_CALLBACKS_H */
+#endif // I_BLE_ADVERTISEMENT_LIBRARY_H
