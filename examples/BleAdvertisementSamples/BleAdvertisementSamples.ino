@@ -1,7 +1,12 @@
 #include "SensirionUptBleServer.h"
 
+auto enabledFeatures = BleServerFeatures::EnableAltDeviceNameSetting |
+                       BleServerFeatures::EnableBatteryService |
+                       BleServerFeatures::EnableWiFiSetting |
+                       BleServerFeatures::EnableFrcService;
+
 NimBLELibraryWrapper lib;
-DataProvider provider(lib, DataType::T_RH_CO2_ALT);
+DataProvider provider(lib, DataType::T_RH_CO2_ALT, enabledFeatures);
 
 uint16_t t = 0;
 uint16_t rh = 0;
@@ -15,6 +20,7 @@ void setup() {
   delay(1000); // Wait for Serial monitor to start
 
   // Initialize the GadgetBle Library
+  provider.setAltDeviceName("MyDevice");
   provider.begin();
 
   Serial.print("Sensirion GadgetBle Lib initialized with deviceId = ");
@@ -23,7 +29,6 @@ void setup() {
 
 void loop() {
   if (millis() - lastMeasurementTimeMs >= measurementIntervalMs) {
-    Serial.println("Measurement");
     provider.writeValueToCurrentSample(++t % 50,
                                        SignalType::TEMPERATURE_DEGREES_CELSIUS);
     provider.writeValueToCurrentSample(
@@ -43,5 +48,8 @@ void loop() {
     Serial.println(rh);
   }
 
-  delay(3);
+  // handle download requests
+  provider.handleDownload();
+
+  delay(20);
 }

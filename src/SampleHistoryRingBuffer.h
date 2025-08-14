@@ -67,14 +67,17 @@ public:
   [[nodiscard]] bool isFull() const { return nextIndex(mHead) == mTail; };
 
   void startReadOut(const uint32_t nrOfSamples) {
+    // read out the whole sample buffer
     if (nrOfSamples >= numberOfSamplesInHistory()) {
       mSampleReadOutIndex = mTail;
-    } else {
-      mSampleReadOutIndex = mHead - nrOfSamples;
-      if (mSampleReadOutIndex < 0) {
-        mSampleReadOutIndex = mSampleReadOutIndex + sizeInSamples();
-      }
+      return;
     }
+
+    int64_t nextReadOutIndex = static_cast<int64_t>(mHead) - nrOfSamples;
+    if (nextReadOutIndex < 0) {
+      nextReadOutIndex += sizeInSamples();
+    }
+    mSampleReadOutIndex = static_cast<uint32_t>(nextReadOutIndex);
   };
 
   // May give out an invalid sample if called on an empty sample history

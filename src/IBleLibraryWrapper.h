@@ -31,8 +31,9 @@
 #ifndef I_BLE_LIBRARY_WRAPPER_H
 #define I_BLE_LIBRARY_WRAPPER_H
 
+#include "IBleAdvertisementLibrary.h"
+#include "IBleServiceLibrary.h"
 #include "IProviderCallbacks.h"
-#include <string>
 
 const auto GADGET_NAME = "S";
 
@@ -40,76 +41,44 @@ const auto GADGET_NAME = "S";
 // write numbers in lower case and to increase
 // the constants MAX_NUMBER_OF_xxx
 
-static const auto DOWNLOAD_SERVICE_UUID =
+static constexpr auto DOWNLOAD_SERVICE_UUID =
     "00008000-b38d-4985-720e-0f993a68ee41";
-static const auto SAMPLE_HISTORY_INTERVAL_UUID =
+static constexpr auto SAMPLE_HISTORY_INTERVAL_UUID =
     "00008001-b38d-4985-720e-0f993a68ee41";
-static const auto NUMBER_OF_SAMPLES_UUID =
+static constexpr auto NUMBER_OF_SAMPLES_UUID =
     "00008002-b38d-4985-720e-0f993a68ee41";
-static const auto REQUESTED_SAMPLES_UUID =
+static constexpr auto REQUESTED_SAMPLES_UUID =
     "00008003-b38d-4985-720e-0f993a68ee41";
-static const auto DOWNLOAD_PACKET_UUID = "00008004-b38d-4985-720e-0f993a68ee41";
+static constexpr auto DOWNLOAD_PACKET_UUID =
+    "00008004-b38d-4985-720e-0f993a68ee41";
 
-static const auto SETTINGS_SERVICE_UUID =
+static constexpr auto SETTINGS_SERVICE_UUID =
     "00008100-b38d-4985-720e-0f993a68ee41";
-static const auto WIFI_SSID_UUID = "00008171-b38d-4985-720e-0f993a68ee41";
-static const auto WIFI_PWD_UUID = "00008172-b38d-4985-720e-0f993a68ee41";
-static const auto ALT_DEVICE_NAME_UUID = "00008120-b38d-4985-720e-0f993a68ee41";
-static const auto BATTERY_SERVICE_UUID = "0000180f-0000-1000-8000-00805f9b34fb";
-static const auto BATTERY_LEVEL_UUID = "00002a19-0000-1000-8000-00805f9b34fb";
+static constexpr auto WIFI_SSID_UUID = "00008171-b38d-4985-720e-0f993a68ee41";
+static constexpr auto WIFI_PWD_UUID = "00008172-b38d-4985-720e-0f993a68ee41";
+static constexpr auto ALT_DEVICE_NAME_UUID =
+    "00008120-b38d-4985-720e-0f993a68ee41";
+static constexpr auto BATTERY_SERVICE_UUID =
+    "0000180f-0000-1000-8000-00805f9b34fb";
+static constexpr auto BATTERY_LEVEL_UUID =
+    "00002a19-0000-1000-8000-00805f9b34fb";
 
-static const auto SCD_SERVICE_UUID = "00007000-b38d-4985-720e-0f993a68ee41";
-static const auto SCD_FRC_REQUEST_UUID = "00007004-b38d-4985-720e-0f993a68ee41";
+static constexpr auto SCD_SERVICE_UUID = "00007000-b38d-4985-720e-0f993a68ee41";
+static constexpr auto SCD_FRC_REQUEST_UUID =
+    "00007004-b38d-4985-720e-0f993a68ee41";
 
 static constexpr unsigned int MAX_NUMBER_OF_SERVICES = 4;
 static constexpr unsigned int MAX_NUMBER_OF_CHARACTERISTICS = 12;
 
-enum Permission {
-  READWRITE_PERMISSION,
-  READ_PERMISSION,
-  WRITE_PERMISSION,
-  NOTIFY_PERMISSION
-};
-
 // abstract class
-class IBleLibraryWrapper {
+class IBleLibraryWrapper : public IBleServiceLibrary,
+                           public IBleAdvertisementLibrary {
 public:
-  virtual ~IBleLibraryWrapper() = default;
-
   virtual void init() = 0;
 
   virtual void createServer() = 0;
 
-  virtual bool createService(const char *uuid) = 0;
-
-  virtual bool startService(const char *uuid) = 0;
-
-  virtual bool createCharacteristic(const char *serviceUuid,
-                                    const char *characteristicUuid,
-                                    Permission permission) = 0;
-
-  // set device name and manufacturer data
-  virtual void setAdvertisingData(const std::string &data) = 0;
-
-  virtual void startAdvertising() = 0;
-
-  virtual void stopAdvertising() = 0;
-
   virtual std::string getDeviceAddress() = 0;
-
-  virtual bool characteristicSetValue(const char *uuid, const uint8_t *data,
-                                      size_t size) = 0;
-
-  virtual bool characteristicSetValue(const char *uuid, int value) = 0;
-
-  virtual bool characteristicSetValue(const char *uuid, uint32_t value) = 0;
-
-  virtual bool characteristicSetValue(const char *uuid, uint64_t value) = 0;
-
-  __attribute__((unused)) virtual std::string
-  characteristicGetValue(const char *uuid) = 0;
-
-  virtual bool characteristicNotify(const char *uuid) = 0;
 
   virtual void setProviderCallbacks(IProviderCallbacks *providerCallbacks) = 0;
 };

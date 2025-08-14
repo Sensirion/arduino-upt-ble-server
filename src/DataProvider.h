@@ -124,13 +124,14 @@ public:
       const std::function<void(std::string, std::string)> &callback);
 
   void registerDeviceNameChangeCallback(
-      const std::function<void(std::string)> &callback);
+      const std::function<void(std::string)> &callback) const;
 
 private:
   IBleLibraryWrapper &mBleLibrary;
 
   Sample mCurrentSample;
   AdvertisementHeader mAdvertisementHeader;
+  // ReSharper disable once CppRedundantTemplateArguments
   SampleHistoryRingBuffer<BLE_SERVER_HISTORY_BUFFER_SIZE> mSampleHistory;
   uint32_t mNrOfSamplesRequested = 0;
   DownloadState mDownloadState = INACTIVE;
@@ -154,7 +155,6 @@ private:
   std::string mWiFiSsid;
   std::vector<std::function<void(std::string, std::string)>>
       mWiFiChangedCallbacks;
-  std::vector<std::function<void(std::string)>> mDeviceNameChangeCallbacks;
 
 private:
   std::string buildAdvertisementData();
@@ -170,21 +170,17 @@ private:
 
 private:
   // ProviderCallbacks
-  void onHistoryIntervalChange(uint32_t interval) override;
+  void onConnect() override;
 
-  void onConnectionEvent() override;
+  void onDisconnect() override;
 
-  void onDownloadRequest() override;
+  void onSubscribe(const std::string &uuid, uint16_t subValue) override;
 
-  void onWifiSsidChange(std::string ssid) override;
-
-  void onWifiPasswordChange(std::string pwd) override;
-
-  void onFRCRequest(uint16_t referenceCo2Level) override;
-
-  void onNrOfSamplesRequest(uint32_t nrOfSamples) override;
-
-  void onAltDeviceNameChange(std::string altDeviceName) override;
+  // setup specific services
+  void setupDownloadService();
+  void setupSettingsService();
+  void setupBatteryService() const;
+  void setupFrcService();
 };
 
 #endif /* DATA_PROVIDER_H */

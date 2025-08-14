@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, Sensirion AG
+ * Copyright (c) 2025, Sensirion AG
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,18 +28,46 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef PROVIDER_CALLBACKS_H
-#define PROVIDER_CALLBACKS_H
-
+#ifndef I_BLE_SERVICE_LIBRARY_H
+#define I_BLE_SERVICE_LIBRARY_H
+#include <functional>
 #include <string>
 
-class IProviderCallbacks {
-public:
-  virtual ~IProviderCallbacks() = default;
-
-  virtual void onConnect() = 0;
-  virtual void onDisconnect() = 0;
-  virtual void onSubscribe(const std::string &uuid, uint16_t subValue) = 0;
+enum Permission {
+  READWRITE_PERMISSION,
+  READ_PERMISSION,
+  WRITE_PERMISSION,
+  NOTIFY_PERMISSION
 };
 
-#endif /* PROVIDER_CALLBACKS_H */
+typedef std::function<void(std::string)> callback_t;
+
+class IBleServiceLibrary {
+public:
+  virtual ~IBleServiceLibrary() = default;
+
+  virtual bool createService(const char *uuid) = 0;
+
+  virtual bool startService(const char *uuid) = 0;
+
+  virtual bool createCharacteristic(const char *serviceUuid,
+                                    const char *characteristicUuid,
+                                    Permission permission) = 0;
+
+  virtual bool characteristicSetValue(const char *uuid, const uint8_t *data,
+                                      size_t size) = 0;
+
+  virtual bool characteristicSetValue(const char *uuid, int value) = 0;
+
+  virtual bool characteristicSetValue(const char *uuid, uint32_t value) = 0;
+
+  virtual bool characteristicSetValue(const char *uuid, uint64_t value) = 0;
+
+  virtual std::string characteristicGetValue(const char *uuid) = 0;
+
+  virtual bool characteristicNotify(const char *uuid) = 0;
+
+  virtual void registerCharacteristicCallback(const char *uuid,
+                                              const callback_t &callback) = 0;
+};
+#endif // I_BLE_SERVICE_LIBRARY_H
