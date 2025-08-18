@@ -4,8 +4,8 @@
 
 uint NimBLELibraryWrapper::mNumberOfInstances = 0;
 
-struct WrapperPrivateData final : BLECharacteristicCallbacks,
-                                  BLEServerCallbacks {
+struct WrapperPrivateData final : NimBLECharacteristicCallbacks,
+                                  NimBLEServerCallbacks {
   NimBLEAdvertising *pNimBLEAdvertising{};
   bool BLEDeviceRunning = false;
   std::unordered_map<std::string, std::vector<callback_t>> mCallbacks;
@@ -21,46 +21,51 @@ struct WrapperPrivateData final : BLECharacteristicCallbacks,
   void registerCallback(const char *uuid, const callback_t &callback);
 
   // BLEServerCallbacks
-  void onConnect(BLEServer *serverInst) override;
+  void onConnect(NimBLEServer *serverInst, NimBLEConnInfo &connInfo) override;
 
-  void onDisconnect(BLEServer *serverInst) override;
+  void onDisconnect(NimBLEServer *serverInst, NimBLEConnInfo &connInfo,
+                    int reason) override;
 
   // BLECharacteristicCallbacks
-  void onWrite(BLECharacteristic *characteristic) override;
+  void onWrite(NimBLECharacteristic *characteristic,
+               NimBLEConnInfo &connInfo) override;
 
-  void onSubscribe(NimBLECharacteristic *pCharacteristic,
-                   ble_gap_conn_desc *desc, uint16_t subValue) override;
+  void onSubscribe(NimBLECharacteristic *characteristic,
+                   NimBLEConnInfo &connInfo, uint16_t subValue) override;
 
   // DataProvider Callbacks
   IProviderCallbacks *providerCallbacks = nullptr;
 };
 
-void WrapperPrivateData::onConnect(NimBLEServer *serverInst) {
+void WrapperPrivateData::onConnect(NimBLEServer *serverInst,
+                                   NimBLEConnInfo &connInfo) {
   if (providerCallbacks == nullptr) {
     return;
   }
   providerCallbacks->onConnect();
 }
 
-void WrapperPrivateData::onDisconnect(BLEServer *serverInst) {
+void WrapperPrivateData::onDisconnect(BLEServer *serverInst,
+                                      NimBLEConnInfo &connInfo, int reason) {
   if (providerCallbacks == nullptr) {
     return;
   }
   providerCallbacks->onDisconnect();
 }
 
-void WrapperPrivateData::onSubscribe(NimBLECharacteristic *pCharacteristic,
-                                     ble_gap_conn_desc *desc,
+void WrapperPrivateData::onSubscribe(NimBLECharacteristic *characteristic,
+                                     NimBLEConnInfo &connInfo,
                                      const uint16_t subValue) {
   if (providerCallbacks == nullptr) {
     return;
   }
 
-  providerCallbacks->onSubscribe(pCharacteristic->getUUID().toString(),
+  providerCallbacks->onSubscribe(characteristic->getUUID().toString(),
                                  subValue);
 }
 
-void WrapperPrivateData::onWrite(BLECharacteristic *characteristic) {
+void WrapperPrivateData::onWrite(BLECharacteristic *characteristic,
+                                 NimBLEConnInfo &connInfo) {
   const std::string uuid = characteristic->getUUID().toString();
 
   if (mCallbacks.find(uuid) == mCallbacks.end()) {
@@ -122,8 +127,7 @@ void NimBLELibraryWrapper::init() {
 
   mData->pNimBLEAdvertising = NimBLEDevice::getAdvertising();
   // Helps with iPhone connection issues (copy/paste)
-  mData->pNimBLEAdvertising->setMinPreferred(0x06);
-  mData->pNimBLEAdvertising->setMaxPreferred(0x12);
+  mData->pNimBLEAdvertising->setPreferredParams(0x06, 0x12);
 
   // Set interval to 1 s. Unit is in 0.625 ms.
   mData->pNimBLEAdvertising->setMinInterval(1600);
@@ -133,6 +137,7 @@ void NimBLELibraryWrapper::init() {
 void NimBLELibraryWrapper::createServer() {
   mData->pBLEServer = NimBLEDevice::createServer();
   mData->pBLEServer->setCallbacks(mData);
+  mData->pBLEServer->advertiseOnDisconnect(true);
 }
 
 bool NimBLELibraryWrapper::createService(const char *const uuid) {
@@ -258,12 +263,11 @@ NimBLELibraryWrapper::characteristicGetValue(const char *const uuid) {
 }
 
 bool NimBLELibraryWrapper::characteristicNotify(const char *const uuid) {
-  NimBLECharacteristic *pCharacteristic = lookupCharacteristic(uuid);
+  const NimBLECharacteristic *pCharacteristic = lookupCharacteristic(uuid);
   if (nullptr == pCharacteristic) {
     return false;
   }
-  pCharacteristic->notify(true);
-  return true;
+  return pCharacteristic->indicate();
 }
 void NimBLELibraryWrapper::registerCharacteristicCallback(
     const char *uuid, const callback_t &callback) {
