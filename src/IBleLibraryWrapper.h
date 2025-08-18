@@ -67,9 +67,6 @@ static constexpr auto SCD_SERVICE_UUID = "00007000-b38d-4985-720e-0f993a68ee41";
 static constexpr auto SCD_FRC_REQUEST_UUID =
     "00007004-b38d-4985-720e-0f993a68ee41";
 
-static constexpr unsigned int MAX_NUMBER_OF_SERVICES = 4;
-static constexpr unsigned int MAX_NUMBER_OF_CHARACTERISTICS = 12;
-
 // abstract class
 class IBleLibraryWrapper : public IBleServiceLibrary,
                            public IBleAdvertisementLibrary {
