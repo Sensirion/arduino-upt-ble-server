@@ -40,7 +40,7 @@ enum Permission {
   NOTIFY_PERMISSION
 };
 
-typedef std::function<void(std::string)> callback_t;
+using ble_service_callback_t = std::function<void(std::string)>;
 
 class IBleServiceLibrary {
 public:
@@ -67,7 +67,8 @@ public:
 
   virtual bool characteristicNotify(const char *uuid) = 0;
 
-  virtual void registerCharacteristicCallback(const char *uuid,
-                                              const callback_t &callback) = 0;
+  virtual void
+  registerCharacteristicCallback(const char *uuid,
+                                 const ble_service_callback_t &callback) = 0;
 };
 #endif // I_BLE_SERVICE_LIBRARY_H

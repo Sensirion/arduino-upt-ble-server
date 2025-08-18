@@ -43,5 +43,7 @@ public:
   virtual void startAdvertising() = 0;
 
   virtual void stopAdvertising() = 0;
+
+  virtual std::string getDeviceAddress() = 0;
 };
 #endif // I_BLE_ADVERTISEMENT_LIBRARY_H

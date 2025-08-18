@@ -11,7 +11,8 @@ struct WrapperPrivateData final : NimBLECharacteristicCallbacks,
                                   NimBLEServerCallbacks {
   NimBLEAdvertising *pNimBLEAdvertising{};
   bool BLEDeviceRunning = false;
-  std::unordered_map<std::string, std::vector<callback_t>> mCallbacks;
+  std::unordered_map<std::string, std::vector<ble_service_callback_t>>
+      mCallbacks;
 
   // owned by NimBLE
   NimBLEServer *pBLEServer{};
@@ -20,7 +21,8 @@ struct WrapperPrivateData final : NimBLECharacteristicCallbacks,
 
   // Handle callbacks on characteristics write
   void initCallbackForCharacteristic(const std::string &uuid);
-  void registerCallback(const char *uuid, const callback_t &callback);
+  void registerCallback(const char *uuid,
+                        const ble_service_callback_t &callback);
 
   // BLEServerCallbacks
   void onConnect(NimBLEServer *serverInst, NimBLEConnInfo &connInfo) override;
@@ -88,8 +90,8 @@ void WrapperPrivateData::initCallbackForCharacteristic(
   }
 }
 
-void WrapperPrivateData::registerCallback(const char *const uuid,
-                                          const callback_t &callback) {
+void WrapperPrivateData::registerCallback(
+    const char *const uuid, const ble_service_callback_t &callback) {
   mCallbacks[uuid].push_back(callback);
 }
 
@@ -279,7 +281,7 @@ bool NimBLELibraryWrapper::characteristicNotify(const char *const uuid) {
   return pCharacteristic->indicate();
 }
 void NimBLELibraryWrapper::registerCharacteristicCallback(
-    const char *uuid, const callback_t &callback) {
+    const char *uuid, const ble_service_callback_t &callback) {
   mData->registerCallback(uuid, callback);
 }
 

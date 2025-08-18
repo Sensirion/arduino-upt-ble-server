@@ -43,6 +43,9 @@ class IBleServiceProvider {
    */
 
 public:
+  explicit IBleServiceProvider(IBleServiceLibrary &bleLibrary)
+      : mBleLibrary(bleLibrary){};
+
   virtual ~IBleServiceProvider() = default;
 
   /*
@@ -51,7 +54,16 @@ public:
    * Start BLE services
    * Register callbacks
    */
-  virtual bool init(IBleServiceLibrary &bleLibrary) = 0;
+  virtual bool begin() = 0;
+
+  virtual void onConnect(){};
+
+  virtual void onDisconnect(){};
+
+  virtual void onSubscribe(const std::string &uuid, uint16_t subValue){};
+
+protected:
+  IBleServiceLibrary &mBleLibrary;
 };
 
 #endif // I_BLE_SERVICE_PROVIDER_H

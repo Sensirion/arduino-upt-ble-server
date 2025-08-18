@@ -88,8 +88,8 @@ public:
 
   bool characteristicNotify(const char *uuid) override;
 
-  void registerCharacteristicCallback(const char *uuid,
-                                      const callback_t &callback) override;
+  void registerCharacteristicCallback(
+      const char *uuid, const ble_service_callback_t &callback) override;
 
   void setProviderCallbacks(IProviderCallbacks *providerCallbacks) override;
 
