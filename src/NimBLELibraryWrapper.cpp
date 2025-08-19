@@ -124,6 +124,33 @@ void NimBLELibraryWrapper::release() {
   }
 }
 
+bool NimBLELibraryWrapper::setAdvertisingInterval(const float minIntervalMs,
+                                                  const float maxIntervalMs) {
+  if (mData->BLEDeviceRunning) {
+    return false;
+  }
+
+  const uint16_t minInterval = static_cast<uint16_t>(minIntervalMs / 1.25);
+  const uint16_t maxInterval = static_cast<uint16_t>(maxIntervalMs / 1.25);
+
+  mData->pNimBLEAdvertising->setMinInterval(minInterval);
+  mData->pNimBLEAdvertising->setMaxInterval(maxInterval);
+  return true;
+}
+
+bool NimBLELibraryWrapper::setPreferredConnectionInterval(
+    const float minIntervalMs, const float maxIntervalMs) {
+  if (mData->BLEDeviceRunning) {
+    return false;
+  }
+
+  const uint16_t minInterval = static_cast<uint16_t>(minIntervalMs / 0.625);
+  const uint16_t maxInterval = static_cast<uint16_t>(maxIntervalMs / 0.625);
+
+  return mData->pNimBLEAdvertising->setPreferredParams(minInterval,
+                                                       maxInterval);
+}
+
 void NimBLELibraryWrapper::init() {
   if (mData->BLEDeviceRunning) {
     return;
@@ -133,11 +160,10 @@ void NimBLELibraryWrapper::init() {
 
   mData->pNimBLEAdvertising = NimBLEDevice::getAdvertising();
   // Helps with iPhone connection issues (copy/paste)
-  mData->pNimBLEAdvertising->setPreferredParams(0x06, 0x12);
+  setPreferredConnectionInterval(7.5, 22.5);
 
-  // Set interval to 1 s. Unit is in 0.625 ms.
-  mData->pNimBLEAdvertising->setMinInterval(1600);
-  mData->pNimBLEAdvertising->setMaxInterval(1600);
+  // Set interval to advertise between 0.5 s and 2 s
+  setAdvertisingInterval(500.0, 2000.0);
 }
 
 void NimBLELibraryWrapper::createServer() {

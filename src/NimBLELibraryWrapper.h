@@ -55,6 +55,30 @@ public:
 
   ~NimBLELibraryWrapper() override;
 
+  /**
+   *
+   * @param minIntervalMs The minimal advertising interval in ms.
+   * @param maxIntervalMs The maximal advertising interval in ms.
+   * @return true if successful, else false
+   * @note This parameter needs to be set before the library is initialized.
+   *       The interval in ms will be converted to ticks with a ratio of
+   *       1 tick => 0.625 ms.
+   */
+  bool setAdvertisingInterval(float minIntervalMs,
+                              float maxIntervalMs) override;
+
+  /**
+   *
+   * @param minIntervalMs The minimal connection interval in ms.
+   * @param maxIntervalMs The maximal connection interval in ms.
+   * @return true if successful, else false
+   * @note This parameter needs to be set before the library is initialized.
+   *       The interval in ms will be converted to ticks with a ratio of
+   *       1 tick => 1.25 ms.
+   */
+  bool setPreferredConnectionInterval(float minIntervalMs,
+                                      float maxIntervalMs) override;
+
   void init() override;
 
   void createServer() override;
