@@ -1,7 +1,7 @@
 #include "SensirionUptBleServer.h"
 
 NimBLELibraryWrapper lib;
-UptBleServer uptBleServer(lib, DataType::T_RH_CO2_ALT);
+DataProvider provider(lib, DataType::T_RH_CO2_ALT);
 
 uint16_t t = 0;
 uint16_t rh = 0;
@@ -15,21 +15,21 @@ void setup() {
   delay(1000); // Wait for Serial monitor to start
 
   // Initialize the GadgetBle Library
-  uptBleServer.begin();
+  provider.begin();
 
   Serial.print("Sensirion GadgetBle Lib initialized with deviceId = ");
-  Serial.println(uptBleServer.getDeviceIdString());
+  Serial.println(provider.getDeviceIdString());
 }
 
 void loop() {
   if (millis() - lastMeasurementTimeMs >= measurementIntervalMs) {
-    uptBleServer.writeValueToCurrentSample(
-        ++t % 50, SignalType::TEMPERATURE_DEGREES_CELSIUS);
-    uptBleServer.writeValueToCurrentSample(
+    provider.writeValueToCurrentSample(++t % 50,
+                                       SignalType::TEMPERATURE_DEGREES_CELSIUS);
+    provider.writeValueToCurrentSample(
         ++rh % 100, SignalType::RELATIVE_HUMIDITY_PERCENTAGE);
-    uptBleServer.writeValueToCurrentSample(++co2 % 1000,
-                                           SignalType::CO2_PARTS_PER_MILLION);
-    uptBleServer.commitSample();
+    provider.writeValueToCurrentSample(++co2 % 1000,
+                                       SignalType::CO2_PARTS_PER_MILLION);
+    provider.commitSample();
     lastMeasurementTimeMs = millis();
     // Provide the sensor values for Tools -> Serial Monitor or Serial Plotter
     Serial.print("mockCO2[ppm]:");
@@ -43,7 +43,7 @@ void loop() {
   }
 
   // handle download requests
-  uptBleServer.handleDownload();
+  provider.handleDownload();
 
   delay(20);
 }

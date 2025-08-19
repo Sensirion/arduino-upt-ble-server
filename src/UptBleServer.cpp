@@ -1,10 +1,10 @@
-#include "DataProvider.h"
+#include "UptBleServer.h"
 
 #include "DownloadBleService.h"
 
 #include <cmath>
 
-void DataProvider::begin() {
+void UptBleServer::begin() {
   setupBLEInfrastructure();
 
   // Setup download service
@@ -12,7 +12,7 @@ void DataProvider::begin() {
   mBleAdvertisement.begin();
 }
 
-void DataProvider::writeValueToCurrentSample(const float value,
+void UptBleServer::writeValueToCurrentSample(const float value,
                                              const SignalType signalType) {
   // Check for a valid value
   if (isnan(value)) {
@@ -33,20 +33,20 @@ void DataProvider::writeValueToCurrentSample(const float value,
   mCurrentSample.writeValue(convertedValue, offset);
 }
 
-void DataProvider::commitSample() {
+void UptBleServer::commitSample() {
   mBleAdvertisement.commitSample(mCurrentSample);
   mDownloadBleService.commitSample(mCurrentSample);
 }
 
-void DataProvider::handleDownload() { mDownloadBleService.handleDownload(); }
+void UptBleServer::handleDownload() { mDownloadBleService.handleDownload(); }
 
-void DataProvider::setSampleConfig(const DataType dataType) {
+void UptBleServer::setSampleConfig(const DataType dataType) {
   mSampleConfig = sampleConfigSelector.at(dataType);
   mBleAdvertisement.setSampleConfig(mSampleConfig);
   mDownloadBleService.setSampleConfig(mSampleConfig);
 }
 
-String DataProvider::getDeviceIdString() const {
+String UptBleServer::getDeviceIdString() const {
   char cDevId[6];
   const std::string macAddress = mBleLibrary.getDeviceAddress();
   snprintf(cDevId, sizeof(cDevId), "%s:%s", macAddress.substr(12, 14).c_str(),
@@ -54,18 +54,18 @@ String DataProvider::getDeviceIdString() const {
   return cDevId;
 }
 
-void DataProvider::setupBLEInfrastructure() {
+void UptBleServer::setupBLEInfrastructure() {
   mBleLibrary.init();
   mBleLibrary.createServer();
 
   mBleLibrary.setProviderCallbacks(this);
 }
 
-void DataProvider::onConnect() { mDownloadBleService.onConnect(); }
+void UptBleServer::onConnect() { mDownloadBleService.onConnect(); }
 
-void DataProvider::onDisconnect() { mDownloadBleService.onDisconnect(); }
+void UptBleServer::onDisconnect() { mDownloadBleService.onDisconnect(); }
 
-void DataProvider::onSubscribe(const std::string &uuid,
+void UptBleServer::onSubscribe(const std::string &uuid,
                                const uint16_t subValue) {
   mDownloadBleService.onSubscribe(uuid, subValue);
 }

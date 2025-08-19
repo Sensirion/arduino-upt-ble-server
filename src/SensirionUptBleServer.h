@@ -32,7 +32,7 @@
 #define SENSIRION_UPT_BLE_SERVER_H
 
 #include "Arduino.h"
-#include "DataProvider.h"
 #include "NimBLELibraryWrapper.h"
+#include "UptBleServer.h"
 
 #endif /* SENSIRION_UPT_BLE_SERVER_H */

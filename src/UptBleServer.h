@@ -28,8 +28,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef DATA_PROVIDER_H
-#define DATA_PROVIDER_H
+#ifndef UPT_BLE_SERVER_H
+#define UPT_BLE_SERVER_H
 
 #include "BleAdvertisement.h"
 #include "DownloadBleService.h"
@@ -39,14 +39,14 @@
 
 #include <string>
 
-class DataProvider final : public IProviderCallbacks {
+class UptBleServer final : public IProviderCallbacks {
 public:
-  explicit DataProvider(IBleLibraryWrapper &libraryWrapper,
+  explicit UptBleServer(IBleLibraryWrapper &libraryWrapper,
                         const DataType dataType = T_RH_V3)
       : mBleLibrary(libraryWrapper),
         mSampleConfig(sampleConfigSelector.at(dataType)),
         mDownloadBleService(DownloadBleService(mBleLibrary, mSampleConfig)),
-        mBleAdvertisement(BleAdvertisement(mBleLibrary, mSampleConfig)){};
+        mBleAdvertisement(BleAdvertisement(mBleLibrary, mSampleConfig)) {};
 
   void begin();
 
@@ -78,4 +78,4 @@ private:
   void onSubscribe(const std::string &uuid, uint16_t subValue) override;
 };
 
-#endif /* DATA_PROVIDER_H */
+#endif /* UPT_BLE_SERVER_H */
