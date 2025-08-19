@@ -40,8 +40,8 @@ public:
   void registerDeviceNameChangeCallback(
       const ble_service_callback_t &callback) const;
 
-  void
-  registerWifiChangedCallback(const wifi_changed_callback_t &callback) const;
+  void registerWifiChangedCallback(
+      const wifi_changed_callback_t wifiChangedCallback) const;
 
 private:
   bool mEnableWifiSettings = true;

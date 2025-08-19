@@ -34,6 +34,7 @@
 #include "BleAdvertisement.h"
 #include "DownloadBleService.h"
 #include "IBleLibraryWrapper.h"
+#include "IBleServiceProvider.h"
 #include "IProviderCallbacks.h"
 #include "Sensirion_UPT_Core.h"
 
@@ -43,10 +44,10 @@ class UptBleServer final : public IProviderCallbacks {
 public:
   explicit UptBleServer(IBleLibraryWrapper &libraryWrapper,
                         const DataType dataType = T_RH_V3)
-      : mBleLibrary(libraryWrapper),
-        mSampleConfig(sampleConfigSelector.at(dataType)),
-        mDownloadBleService(DownloadBleService(mBleLibrary, mSampleConfig)),
-        mBleAdvertisement(BleAdvertisement(mBleLibrary, mSampleConfig)) {};
+      : mBleLibrary{libraryWrapper}, mSampleConfig{sampleConfigSelector.at(
+                                         dataType)},
+        mDownloadBleService{DownloadBleService(mBleLibrary, mSampleConfig)},
+        mBleAdvertisement{BleAdvertisement(mBleLibrary, mSampleConfig)} {};
 
   void begin();
 
@@ -57,6 +58,8 @@ public:
   void commitSample();
   void handleDownload();
 
+  void registerBleServiceProvider(IBleServiceProvider &serviceProvider);
+
 private:
   IBleLibraryWrapper &mBleLibrary;
 
@@ -65,6 +68,7 @@ private:
 
   DownloadBleService mDownloadBleService;
   BleAdvertisement mBleAdvertisement;
+  std::vector<IBleServiceProvider *> mBleServiceProviders;
 
 private:
   void setupBLEInfrastructure();

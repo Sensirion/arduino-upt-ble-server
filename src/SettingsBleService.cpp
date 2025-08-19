@@ -1,5 +1,6 @@
 #include "SettingsBleService.h"
 
+#include <HardwareSerial.h>
 #include <cstring>
 
 bool SettingsBleService::begin() {
@@ -60,9 +61,10 @@ void SettingsBleService::registerDeviceNameChangeCallback(
 }
 
 void SettingsBleService::registerWifiChangedCallback(
-    const wifi_changed_callback_t &callback) const {
-  auto onWifiPwdChanged = [&](const std::string &pwd) {
-    callback(mWiFiSsid, pwd);
+    // ReSharper disable once CppPassValueParameterByConstReference
+    const wifi_changed_callback_t wifiChangedCallback) const {
+  auto onWifiPwdChanged = [=](const std::string &wifiPwd) {
+    wifiChangedCallback(mWiFiSsid, wifiPwd);
   };
   mBleLibrary.registerCharacteristicCallback(WIFI_PWD_UUID, onWifiPwdChanged);
 }

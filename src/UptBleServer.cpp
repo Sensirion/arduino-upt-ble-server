@@ -9,6 +9,13 @@ void UptBleServer::begin() {
 
   // Setup download service
   mDownloadBleService.begin();
+
+  // setup additional services
+  for (IBleServiceProvider *provider : mBleServiceProviders) {
+    provider->begin();
+  }
+
+  // Setup advertisement
   mBleAdvertisement.begin();
 }
 
@@ -40,6 +47,11 @@ void UptBleServer::commitSample() {
 
 void UptBleServer::handleDownload() { mDownloadBleService.handleDownload(); }
 
+void UptBleServer::registerBleServiceProvider(
+    IBleServiceProvider &serviceProvider) {
+  mBleServiceProviders.push_back(&serviceProvider);
+}
+
 void UptBleServer::setSampleConfig(const DataType dataType) {
   mSampleConfig = sampleConfigSelector.at(dataType);
   mBleAdvertisement.setSampleConfig(mSampleConfig);
@@ -61,11 +73,27 @@ void UptBleServer::setupBLEInfrastructure() {
   mBleLibrary.setProviderCallbacks(this);
 }
 
-void UptBleServer::onConnect() { mDownloadBleService.onConnect(); }
+void UptBleServer::onConnect() {
+  mDownloadBleService.onConnect();
 
-void UptBleServer::onDisconnect() { mDownloadBleService.onDisconnect(); }
+  for (IBleServiceProvider *provider : mBleServiceProviders) {
+    provider->onConnect();
+  }
+}
+
+void UptBleServer::onDisconnect() {
+  mDownloadBleService.onDisconnect();
+
+  for (IBleServiceProvider *provider : mBleServiceProviders) {
+    provider->onDisconnect();
+  }
+}
 
 void UptBleServer::onSubscribe(const std::string &uuid,
                                const uint16_t subValue) {
   mDownloadBleService.onSubscribe(uuid, subValue);
+
+  for (IBleServiceProvider *provider : mBleServiceProviders) {
+    provider->onSubscribe(uuid, subValue);
+  }
 }
