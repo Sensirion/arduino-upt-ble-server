@@ -170,7 +170,6 @@ void NimBLELibraryWrapper::init() {
 void NimBLELibraryWrapper::createServer() {
   mData->pBLEServer = NimBLEDevice::createServer();
   mData->pBLEServer->setCallbacks(mData);
-  mData->pBLEServer->advertiseOnDisconnect(true);
 }
 
 bool NimBLELibraryWrapper::createService(const char *const uuid) {
