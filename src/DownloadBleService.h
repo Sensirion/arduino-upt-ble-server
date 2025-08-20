@@ -26,7 +26,7 @@ static constexpr auto DOWNLOAD_PACKET_UUID =
 class DownloadBleService final : IBleServiceProvider {
 public:
   explicit DownloadBleService(IBleServiceLibrary &bleLibrary,
-                              const SampleConfig &sampleConfig)
+                              const core::SampleConfig &sampleConfig)
       : IBleServiceProvider(bleLibrary), mSampleConfig(sampleConfig){};
 
   bool begin() override;
@@ -34,7 +34,7 @@ public:
   void commitSample(const Sample &sample);
   void handleDownload();
   bool isDownloading() const;
-  void setSampleConfig(const SampleConfig &sampleConfig) {
+  void setSampleConfig(const core::SampleConfig &sampleConfig) {
     mSampleConfig = sampleConfig;
     mSampleHistory.setSampleSize(mSampleConfig.sampleSizeBytes);
   }
@@ -44,7 +44,7 @@ public:
   void onSubscribe(const std::string &uuid, uint16_t subValue) override;
 
 private:
-  SampleConfig mSampleConfig;
+  core::SampleConfig mSampleConfig;
   // ReSharper disable once CppRedundantTemplateArguments
   SampleHistoryRingBuffer<BLE_SERVER_HISTORY_BUFFER_SIZE> mSampleHistory;
   uint32_t mNrOfSamplesRequested = 0;

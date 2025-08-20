@@ -45,9 +45,9 @@ namespace sensirion::upt::ble_server {
 class UptBleServer final : public IProviderCallbacks {
 public:
   explicit UptBleServer(IBleLibraryWrapper &libraryWrapper,
-                        const DataType dataType = T_RH_V3)
-      : mBleLibrary{libraryWrapper}, mSampleConfig{sampleConfigSelector.at(
-                                         dataType)},
+                        const core::DataType dataType = core::T_RH_V3)
+      : mBleLibrary{libraryWrapper},
+        mSampleConfig{core::sampleConfigSelector.at(dataType)},
         mDownloadBleService{DownloadBleService(mBleLibrary, mSampleConfig)},
         mBleAdvertisement{BleAdvertisement(mBleLibrary, mSampleConfig)} {};
 
@@ -55,8 +55,8 @@ public:
 
   [[nodiscard]] String getDeviceIdString() const;
 
-  void setSampleConfig(DataType dataType);
-  void writeValueToCurrentSample(float value, SignalType signalType);
+  void setSampleConfig(core::DataType dataType);
+  void writeValueToCurrentSample(float value, core::SignalType signalType);
   void commitSample();
   void handleDownload();
 
@@ -65,7 +65,7 @@ public:
 private:
   IBleLibraryWrapper &mBleLibrary;
 
-  SampleConfig mSampleConfig;
+  core::SampleConfig mSampleConfig;
   Sample mCurrentSample;
 
   DownloadBleService mDownloadBleService;

@@ -21,7 +21,7 @@ void BleAdvertisement::begin() {
   mAdvertisementLibrary.startAdvertising();
 }
 
-void BleAdvertisement::setSampleConfig(const SampleConfig &sampleConfig) {
+void BleAdvertisement::setSampleConfig(const core::SampleConfig &sampleConfig) {
   mSampleConfig = sampleConfig;
 }
 

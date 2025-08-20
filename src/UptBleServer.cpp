@@ -21,8 +21,8 @@ void UptBleServer::begin() {
   mBleAdvertisement.begin();
 }
 
-void UptBleServer::writeValueToCurrentSample(const float value,
-                                             const SignalType signalType) {
+void UptBleServer::writeValueToCurrentSample(
+    const float value, const core::SignalType signalType) {
   // Check for a valid value
   if (isnan(value)) {
     return;
@@ -54,8 +54,8 @@ void UptBleServer::registerBleServiceProvider(
   mBleServiceProviders.push_back(&serviceProvider);
 }
 
-void UptBleServer::setSampleConfig(const DataType dataType) {
-  mSampleConfig = sampleConfigSelector.at(dataType);
+void UptBleServer::setSampleConfig(const core::DataType dataType) {
+  mSampleConfig = core::sampleConfigSelector.at(dataType);
   mBleAdvertisement.setSampleConfig(mSampleConfig);
   mDownloadBleService.setSampleConfig(mSampleConfig);
 }

@@ -5,7 +5,7 @@ using namespace sensirion::upt;
 
 ble_server::NimBLELibraryWrapper lib;
 ble_server::BatteryBleService batteryBleService(lib);
-ble_server::UptBleServer uptBleServer(lib, T_RH_CO2_ALT);
+ble_server::UptBleServer uptBleServer(lib, core::T_RH_CO2_ALT);
 
 uint16_t t = 0;
 uint16_t rh = 0;
@@ -35,11 +35,11 @@ void setup() {
 void loop() {
   if (millis() - lastMeasurementTimeMs >= measurementIntervalMs) {
     uptBleServer.writeValueToCurrentSample(
-        ++t % 50, SignalType::TEMPERATURE_DEGREES_CELSIUS);
+        ++t % 50, core::SignalType::TEMPERATURE_DEGREES_CELSIUS);
     uptBleServer.writeValueToCurrentSample(
-        ++rh % 100, SignalType::RELATIVE_HUMIDITY_PERCENTAGE);
-    uptBleServer.writeValueToCurrentSample(++co2 % 1000,
-                                           SignalType::CO2_PARTS_PER_MILLION);
+        ++rh % 100, core::SignalType::RELATIVE_HUMIDITY_PERCENTAGE);
+    uptBleServer.writeValueToCurrentSample(
+        ++co2 % 1000, core::SignalType::CO2_PARTS_PER_MILLION);
     // Update battery
     batteryLevel--;
     if (batteryLevel == 0 || batteryLevel > 100) {

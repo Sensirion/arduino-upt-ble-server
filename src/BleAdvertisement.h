@@ -10,16 +10,16 @@ namespace sensirion::upt::ble_server {
 class BleAdvertisement {
 public:
   explicit BleAdvertisement(IBleAdvertisementLibrary &bleLibrary,
-                            const SampleConfig &sampleConfig)
+                            const core::SampleConfig &sampleConfig)
       : mSampleConfig(sampleConfig), mAdvertisementLibrary(bleLibrary){};
 
   void begin();
 
-  void setSampleConfig(const SampleConfig &sampleConfig);
+  void setSampleConfig(const core::SampleConfig &sampleConfig);
   void commitSample(Sample &sample);
 
 private:
-  SampleConfig mSampleConfig;
+  core::SampleConfig mSampleConfig;
   IBleAdvertisementLibrary &mAdvertisementLibrary;
   AdvertisementHeader mAdvertisementHeader;
 
