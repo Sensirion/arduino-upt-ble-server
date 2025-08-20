@@ -11,7 +11,8 @@ bool SettingsBleService::begin() {
   if (mEnableWifiSettings) {
     // ReSharper disable CppDFAUnreachableCode
     mBleLibrary.createCharacteristic(SETTINGS_SERVICE_UUID, WIFI_SSID_UUID,
-                                     Permission::READWRITE_PERMISSION);
+                                     Permission::READ_PERMISSION |
+                                         Permission::WRITE_PERMISSION);
     const auto ssid = "ssid";
     mBleLibrary.characteristicSetValue(
         WIFI_SSID_UUID, reinterpret_cast<const uint8_t *>(ssid), strlen(ssid));
@@ -32,9 +33,9 @@ bool SettingsBleService::begin() {
 
   // ReSharper disable once CppDFAConstantConditions
   if (mEnableAltDeviceName) {
-    mBleLibrary.createCharacteristic(SETTINGS_SERVICE_UUID,
-                                     ALT_DEVICE_NAME_UUID,
-                                     Permission::READWRITE_PERMISSION);
+    mBleLibrary.createCharacteristic(
+        SETTINGS_SERVICE_UUID, ALT_DEVICE_NAME_UUID,
+        Permission::READ_PERMISSION | Permission::WRITE_PERMISSION);
     setAltDeviceName(mAltDeviceName);
 
     auto onAltDeviceNameChange = [&](const std::string &deviceName) {

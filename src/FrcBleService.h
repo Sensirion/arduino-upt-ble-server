@@ -18,10 +18,6 @@ public:
   bool begin() override;
 
   void registerFrcRequestCallback(const frc_request_callback_t callback) const;
-
-private:
-  bool mFrcRequested = false;
-  uint32_t mReferenceCo2Level = 0;
 };
 
 } // namespace sensirion::upt::ble_server

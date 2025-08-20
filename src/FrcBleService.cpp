@@ -5,7 +5,7 @@ namespace sensirion::upt::ble_server {
 bool FrcBleService::begin() {
   mBleLibrary.createService(SCD_SERVICE_UUID);
   mBleLibrary.createCharacteristic(SCD_SERVICE_UUID, SCD_FRC_REQUEST_UUID,
-                                   WRITE_PERMISSION);
+                                   Permission::WRITE_PERMISSION);
   mBleLibrary.characteristicSetValue(SCD_FRC_REQUEST_UUID, 0);
   mBleLibrary.startService(SCD_SERVICE_UUID);
 

@@ -129,6 +129,10 @@ private:
 private:
   static WrapperPrivateData *mData;
   static uint mNumberOfInstances;
+  uint16_t mMinAdvertisingIntervalTicks = 800;
+  uint16_t mMaxAdvertisingIntervalTicks = 3200;
+  uint16_t mMinConnectionIntervalTicks = 0x6;
+  uint16_t mMaxConnectionIntervalTicks = 0x12;
 };
 
 } // namespace sensirion::upt::ble_server

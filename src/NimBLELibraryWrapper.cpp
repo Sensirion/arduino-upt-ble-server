@@ -132,11 +132,9 @@ bool NimBLELibraryWrapper::setAdvertisingInterval(const float minIntervalMs,
     return false;
   }
 
-  const uint16_t minInterval = static_cast<uint16_t>(minIntervalMs / 1.25);
-  const uint16_t maxInterval = static_cast<uint16_t>(maxIntervalMs / 1.25);
+  mMinAdvertisingIntervalTicks = static_cast<uint16_t>(minIntervalMs / 1.25);
+  mMaxAdvertisingIntervalTicks = static_cast<uint16_t>(maxIntervalMs / 1.25);
 
-  mData->pNimBLEAdvertising->setMinInterval(minInterval);
-  mData->pNimBLEAdvertising->setMaxInterval(maxInterval);
   return true;
 }
 
@@ -146,11 +144,9 @@ bool NimBLELibraryWrapper::setPreferredConnectionInterval(
     return false;
   }
 
-  const uint16_t minInterval = static_cast<uint16_t>(minIntervalMs / 0.625);
-  const uint16_t maxInterval = static_cast<uint16_t>(maxIntervalMs / 0.625);
-
-  return mData->pNimBLEAdvertising->setPreferredParams(minInterval,
-                                                       maxInterval);
+  mMinConnectionIntervalTicks = static_cast<uint16_t>(minIntervalMs / 0.625);
+  mMaxConnectionIntervalTicks = static_cast<uint16_t>(maxIntervalMs / 0.625);
+  return true;
 }
 
 void NimBLELibraryWrapper::init() {
@@ -158,14 +154,17 @@ void NimBLELibraryWrapper::init() {
     return;
   }
   NimBLEDevice::init(GADGET_NAME);
-  mData->BLEDeviceRunning = true;
 
   mData->pNimBLEAdvertising = NimBLEDevice::getAdvertising();
   // Helps with iPhone connection issues (copy/paste)
-  setPreferredConnectionInterval(7.5, 22.5);
+  mData->pNimBLEAdvertising->setPreferredParams(mMinConnectionIntervalTicks,
+                                                mMaxConnectionIntervalTicks);
 
   // Set interval to advertise between 0.5 s and 2 s
-  setAdvertisingInterval(500.0, 2000.0);
+  mData->pNimBLEAdvertising->setMinInterval(mMinAdvertisingIntervalTicks);
+  mData->pNimBLEAdvertising->setMaxInterval(mMaxAdvertisingIntervalTicks);
+
+  mData->BLEDeviceRunning = true;
 }
 
 void NimBLELibraryWrapper::createServer() {
@@ -198,32 +197,27 @@ bool NimBLELibraryWrapper::createCharacteristic(
     return true;
   }
 
-  NimBLECharacteristic *characteristic;
-  switch (permission) {
-  case READWRITE_PERMISSION:
-    characteristic = service->createCharacteristic(characteristicUuid);
-    characteristic->setCallbacks(mData);
-    mData->initCallbackForCharacteristic(characteristicUuid);
-    break;
-  case READ_PERMISSION:
-    characteristic = service->createCharacteristic(characteristicUuid,
-                                                   NIMBLE_PROPERTY::READ);
-    break;
-  case WRITE_PERMISSION:
-    characteristic = service->createCharacteristic(characteristicUuid,
-                                                   NIMBLE_PROPERTY::WRITE);
-    characteristic->setCallbacks(mData);
-    mData->initCallbackForCharacteristic(characteristicUuid);
-    break;
-  case NOTIFY_PERMISSION:
-    characteristic = service->createCharacteristic(characteristicUuid,
-                                                   NIMBLE_PROPERTY::NOTIFY);
-    characteristic->setCallbacks(mData);
-    mData->initCallbackForCharacteristic(characteristicUuid);
-    break;
-  default:
+  uint16_t nimbleProperty = 0;
+
+  if (permission == Permission::READ_PERMISSION) {
+    nimbleProperty |= READ;
+  }
+  if (permission == Permission::WRITE_PERMISSION) {
+    nimbleProperty |= WRITE;
+  }
+  if (permission == Permission::NOTIFY_PERMISSION) {
+    nimbleProperty |= NOTIFY;
+  }
+
+  if (nimbleProperty == 0) {
+    // don't create characteristics with no permission
     return false;
   }
+
+  NimBLECharacteristic *characteristic =
+      service->createCharacteristic(characteristicUuid, nimbleProperty);
+  characteristic->setCallbacks(mData);
+  mData->initCallbackForCharacteristic(characteristicUuid);
   mData->characteristics.push_back(characteristic);
   return true;
 }

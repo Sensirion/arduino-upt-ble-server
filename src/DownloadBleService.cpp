@@ -17,9 +17,9 @@ bool DownloadBleService::begin() {
   mBleLibrary.createCharacteristic(DOWNLOAD_SERVICE_UUID,
                                    REQUESTED_SAMPLES_UUID,
                                    Permission::WRITE_PERMISSION);
-  mBleLibrary.createCharacteristic(DOWNLOAD_SERVICE_UUID,
-                                   SAMPLE_HISTORY_INTERVAL_UUID,
-                                   Permission::READWRITE_PERMISSION);
+  mBleLibrary.createCharacteristic(
+      DOWNLOAD_SERVICE_UUID, SAMPLE_HISTORY_INTERVAL_UUID,
+      Permission::READ_PERMISSION | Permission::WRITE_PERMISSION);
   mBleLibrary.characteristicSetValue(SAMPLE_HISTORY_INTERVAL_UUID,
                                      mHistoryIntervalMilliSeconds);
   mBleLibrary.createCharacteristic(DOWNLOAD_SERVICE_UUID, DOWNLOAD_PACKET_UUID,
