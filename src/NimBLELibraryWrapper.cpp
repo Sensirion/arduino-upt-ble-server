@@ -2,6 +2,8 @@
 #include <NimBLEDevice.h>
 #include <NimBLEServer.h>
 
+namespace sensirion::upt::ble_server {
+
 static constexpr unsigned int INITIAL_NUMBER_OF_SERVICES = 4;
 static constexpr unsigned int INITIAL_NUMBER_OF_CHARACTERISTICS = 12;
 
@@ -342,3 +344,5 @@ NimBLEService *NimBLELibraryWrapper::lookupService(const char *const uuid) {
   return findByUuid(mData->services, uuid,
                     [](auto *elem) { return elem->getUUID().toString(); });
 }
+
+} // namespace sensirion::upt::ble_server

@@ -1,9 +1,11 @@
 #include "SensirionUptBleServer.h"
 #include "SettingsBleService.h"
 
-NimBLELibraryWrapper lib;
-SettingsBleService settingsBleService(lib);
-UptBleServer uptBleServer(lib, DataType::T_RH_CO2_ALT);
+using namespace sensirion::upt;
+
+ble_server::NimBLELibraryWrapper lib;
+ble_server::SettingsBleService settingsBleService(lib);
+ble_server::UptBleServer uptBleServer(lib, DataType::T_RH_CO2_ALT);
 
 uint16_t t = 0;
 uint16_t rh = 0;

@@ -35,6 +35,8 @@
 #include <array>
 #include <string>
 
+namespace sensirion::upt::ble_server {
+
 // Must explicitly instantiate a template in Samples.cpp before usage
 template <size_t SIZE> class ByteArray {
 public:
@@ -73,5 +75,7 @@ protected:
   }
   std::array<uint8_t, SIZE> mData = {};
 };
+
+} // namespace sensirion::upt::ble_server
 
 #endif /* BYTE_ARRAY_H */

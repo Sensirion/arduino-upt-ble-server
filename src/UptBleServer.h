@@ -40,6 +40,8 @@
 
 #include <string>
 
+namespace sensirion::upt::ble_server {
+
 class UptBleServer final : public IProviderCallbacks {
 public:
   explicit UptBleServer(IBleLibraryWrapper &libraryWrapper,
@@ -81,5 +83,7 @@ private:
 
   void onSubscribe(const std::string &uuid, uint16_t subValue) override;
 };
+
+} // namespace sensirion::upt::ble_server
 
 #endif /* UPT_BLE_SERVER_H */

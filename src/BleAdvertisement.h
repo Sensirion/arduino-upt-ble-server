@@ -5,6 +5,8 @@
 #include "IBleAdvertisementLibrary.h"
 #include "Sample.h"
 
+namespace sensirion::upt::ble_server {
+
 class BleAdvertisement {
 public:
   explicit BleAdvertisement(IBleAdvertisementLibrary &bleLibrary,
@@ -24,4 +26,7 @@ private:
 private:
   std::string buildAdvertisementData(Sample &sample);
 };
+
+} // namespace sensirion::upt::ble_server
+
 #endif // ARDUINO_UPT_BLE_SERVER_BLE_ADVERTISEMENT_H

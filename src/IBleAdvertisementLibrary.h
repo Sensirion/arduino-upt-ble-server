@@ -33,6 +33,8 @@
 #define I_BLE_ADVERTISEMENT_LIBRARY_H
 #include <string>
 
+namespace sensirion::upt::ble_server {
+
 class IBleAdvertisementLibrary {
 public:
   virtual ~IBleAdvertisementLibrary() = default;
@@ -67,4 +69,7 @@ public:
   virtual bool setPreferredConnectionInterval(float minIntervalMs,
                                               float maxIntervalMs);
 };
+
+} // namespace sensirion::upt::ble_server
+
 #endif // I_BLE_ADVERTISEMENT_LIBRARY_H

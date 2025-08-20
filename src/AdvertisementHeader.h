@@ -33,6 +33,8 @@
 
 #include "ByteArray.h"
 
+namespace sensirion::upt::ble_server {
+
 static constexpr size_t ADVERTISEMENT_HEADER_SIZE_BYTES = 6;
 
 class AdvertisementHeader : public ByteArray<ADVERTISEMENT_HEADER_SIZE_BYTES> {
@@ -45,5 +47,7 @@ public:
 
   void writeDeviceId(uint8_t deviceIDHigh, uint8_t deviceIDLow);
 };
+
+} // namespace sensirion::upt::ble_server
 
 #endif /* ADVERTISEMENT_HEADER_H */

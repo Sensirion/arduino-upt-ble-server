@@ -3,6 +3,8 @@
 #include <HardwareSerial.h>
 #include <cstring>
 
+namespace sensirion::upt::ble_server {
+
 bool SettingsBleService::begin() {
   mBleLibrary.createService(SETTINGS_SERVICE_UUID);
   // ReSharper disable once CppDFAConstantConditions
@@ -68,3 +70,5 @@ void SettingsBleService::registerWifiChangedCallback(
   };
   mBleLibrary.registerCharacteristicCallback(WIFI_PWD_UUID, onWifiPwdChanged);
 }
+
+} // namespace sensirion::upt::ble_server

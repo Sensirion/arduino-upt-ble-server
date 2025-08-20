@@ -33,6 +33,8 @@
 
 #include <string>
 
+namespace sensirion::upt::ble_server {
+
 class IProviderCallbacks {
 public:
   virtual ~IProviderCallbacks() = default;
@@ -41,5 +43,7 @@ public:
   virtual void onDisconnect() = 0;
   virtual void onSubscribe(const std::string &uuid, uint16_t subValue) = 0;
 };
+
+} // namespace sensirion::upt::ble_server
 
 #endif /* PROVIDER_CALLBACKS_H */

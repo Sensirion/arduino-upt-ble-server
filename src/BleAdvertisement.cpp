@@ -1,5 +1,7 @@
 #include "BleAdvertisement.h"
 
+namespace sensirion::upt::ble_server {
+
 void BleAdvertisement::begin() {
   // Fill advertisement header
   mAdvertisementHeader.writeCompanyId(0x06D5);
@@ -36,3 +38,5 @@ std::string BleAdvertisement::buildAdvertisementData(Sample &sample) {
   data.append(sample.getDataString());
   return data;
 }
+
+} // namespace sensirion::upt::ble_server

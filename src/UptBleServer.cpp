@@ -4,6 +4,8 @@
 
 #include <cmath>
 
+namespace sensirion::upt::ble_server {
+
 void UptBleServer::begin() {
   setupBLEInfrastructure();
 
@@ -97,3 +99,5 @@ void UptBleServer::onSubscribe(const std::string &uuid,
     provider->onSubscribe(uuid, subValue);
   }
 }
+
+} // namespace sensirion::upt::ble_server

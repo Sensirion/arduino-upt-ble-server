@@ -2,6 +2,8 @@
 #define ARDUINO_UPT_BLE_SERVER_SETTINGS_BLE_SERVICE_H
 #include "IBleServiceProvider.h"
 
+namespace sensirion::upt::ble_server {
+
 constexpr auto SETTINGS_SERVICE_UUID = "00008100-b38d-4985-720e-0f993a68ee41";
 constexpr auto WIFI_SSID_UUID = "00008171-b38d-4985-720e-0f993a68ee41";
 constexpr auto WIFI_PWD_UUID = "00008172-b38d-4985-720e-0f993a68ee41";
@@ -49,5 +51,7 @@ private:
   std::string mWiFiSsid;
   std::string mAltDeviceName;
 };
+
+} // namespace sensirion::upt::ble_server
 
 #endif // ARDUINO_UPT_BLE_SERVER_SETTINGS_BLE_SERVICE_H

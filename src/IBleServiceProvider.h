@@ -32,6 +32,8 @@
 #define I_BLE_SERVICE_PROVIDER_H
 #include "IBleServiceLibrary.h"
 
+namespace sensirion::upt::ble_server {
+
 class IBleServiceProvider {
   /*
    * Responsibilities of a Ble Service Provider
@@ -65,5 +67,7 @@ public:
 protected:
   IBleServiceLibrary &mBleLibrary;
 };
+
+} // namespace sensirion::upt::ble_server
 
 #endif // I_BLE_SERVICE_PROVIDER_H

@@ -1,5 +1,7 @@
 #include "FrcBleService.h"
 
+namespace sensirion::upt::ble_server {
+
 bool FrcBleService::begin() {
   mBleLibrary.createService(SCD_SERVICE_UUID);
   mBleLibrary.createCharacteristic(SCD_SERVICE_UUID, SCD_FRC_REQUEST_UUID,
@@ -23,3 +25,5 @@ void FrcBleService::registerFrcRequestCallback(
   mBleLibrary.registerCharacteristicCallback(SCD_FRC_REQUEST_UUID,
                                              onFRCRequest);
 }
+
+} // namespace sensirion::upt::ble_server

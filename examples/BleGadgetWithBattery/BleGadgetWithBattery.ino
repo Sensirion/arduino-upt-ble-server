@@ -1,9 +1,11 @@
 #include "BatteryBleService.h"
 #include "SensirionUptBleServer.h"
 
-NimBLELibraryWrapper lib;
-BatteryBleService batteryBleService(lib);
-UptBleServer uptBleServer(lib, T_RH_CO2_ALT);
+using namespace sensirion::upt;
+
+ble_server::NimBLELibraryWrapper lib;
+ble_server::BatteryBleService batteryBleService(lib);
+ble_server::UptBleServer uptBleServer(lib, T_RH_CO2_ALT);
 
 uint16_t t = 0;
 uint16_t rh = 0;

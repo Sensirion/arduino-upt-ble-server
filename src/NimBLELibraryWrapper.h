@@ -36,6 +36,8 @@
 
 #include <NimBLECharacteristic.h>
 
+namespace sensirion::upt::ble_server {
+
 struct WrapperPrivateData;
 
 class NimBLELibraryWrapper final : public IBleLibraryWrapper {
@@ -128,5 +130,7 @@ private:
   static WrapperPrivateData *mData;
   static uint mNumberOfInstances;
 };
+
+} // namespace sensirion::upt::ble_server
 
 #endif /* NIM_BLE_LIBRARY_WRAPPER_H */

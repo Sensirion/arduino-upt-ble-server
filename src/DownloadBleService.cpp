@@ -2,6 +2,8 @@
 
 #include "BLEProtocol.h"
 
+namespace sensirion::upt::ble_server {
+
 bool DownloadBleService::begin() {
   // set sample size for history before creating services and characteristics
   mSampleHistory.setSampleSize(mSampleConfig.sampleSizeBytes);
@@ -163,3 +165,5 @@ uint32_t DownloadBleService::numberOfPacketsRequired(
   }
   return numberOfPacketsRequired;
 }
+
+} // namespace sensirion::upt::ble_server

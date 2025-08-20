@@ -1,5 +1,7 @@
 #include "BatteryBleService.h"
 
+namespace sensirion::upt::ble_server {
+
 bool BatteryBleService::begin() {
   mBleLibrary.createService(BATTERY_SERVICE_UUID);
   mBleLibrary.createCharacteristic(BATTERY_SERVICE_UUID, BATTERY_LEVEL_UUID,
@@ -13,3 +15,5 @@ bool BatteryBleService::begin() {
 void BatteryBleService::setBatteryLevel(const uint8_t value) const {
   mBleLibrary.characteristicSetValue(BATTERY_LEVEL_UUID, &value, 1);
 }
+
+} // namespace sensirion::upt::ble_server

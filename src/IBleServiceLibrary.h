@@ -33,6 +33,8 @@
 #include <functional>
 #include <string>
 
+namespace sensirion::upt::ble_server {
+
 enum Permission {
   READWRITE_PERMISSION,
   READ_PERMISSION,
@@ -71,4 +73,7 @@ public:
   registerCharacteristicCallback(const char *uuid,
                                  const ble_service_callback_t &callback) = 0;
 };
+
+} // namespace sensirion::upt::ble_server
+
 #endif // I_BLE_SERVICE_LIBRARY_H

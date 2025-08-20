@@ -34,6 +34,8 @@
 #include "ByteArray.h"
 #include "Sample.h"
 
+namespace sensirion::upt::ble_server {
+
 static constexpr size_t DOWNLOAD_PACKET_SIZE_BYTES = 20;
 
 class DownloadHeader : public ByteArray<DOWNLOAD_PACKET_SIZE_BYTES> {
@@ -57,5 +59,7 @@ public:
 };
 
 enum DownloadState { INACTIVE = 0, START = 1, DOWNLOADING = 2, COMPLETED = 3 };
+
+} // namespace sensirion::upt::ble_server
 
 #endif /* DOWNLOAD_H */

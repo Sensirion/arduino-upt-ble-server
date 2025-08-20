@@ -3,6 +3,8 @@
 
 #include "IBleServiceProvider.h"
 
+namespace sensirion::upt::ble_server {
+
 constexpr auto SCD_SERVICE_UUID = "00007000-b38d-4985-720e-0f993a68ee41";
 constexpr auto SCD_FRC_REQUEST_UUID = "00007004-b38d-4985-720e-0f993a68ee41";
 
@@ -21,5 +23,7 @@ private:
   bool mFrcRequested = false;
   uint32_t mReferenceCo2Level = 0;
 };
+
+} // namespace sensirion::upt::ble_server
 
 #endif // ARDUINO_UPT_BLE_SERVER_FRC_BLE_SERVICE_H

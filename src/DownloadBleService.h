@@ -6,6 +6,8 @@
 
 #include <BLEProtocol.h>
 
+namespace sensirion::upt::ble_server {
+
 static constexpr auto DOWNLOAD_SERVICE_UUID =
     "00008000-b38d-4985-720e-0f993a68ee41";
 static constexpr auto SAMPLE_HISTORY_INTERVAL_UUID =
@@ -62,5 +64,7 @@ private:
 
   uint32_t numberOfPacketsRequired(uint32_t numberOfSamples) const;
 };
+
+} // namespace sensirion::upt::ble_server
 
 #endif // ARDUINO_UPT_BLE_SERVER_DOWNLOAD_BLE_SERVICE_H

@@ -35,6 +35,8 @@
 #include "IBleServiceLibrary.h"
 #include "IProviderCallbacks.h"
 
+namespace sensirion::upt::ble_server {
+
 const auto GADGET_NAME = "S";
 
 // abstract class
@@ -47,5 +49,7 @@ public:
 
   virtual void setProviderCallbacks(IProviderCallbacks *providerCallbacks) = 0;
 };
+
+} // namespace sensirion::upt::ble_server
 
 #endif /* I_BLE_LIBRARY_WRAPPER_H */

@@ -34,6 +34,8 @@
 #include "ByteArray.h"
 #include "Sample.h"
 
+namespace sensirion::upt::ble_server {
+
 static constexpr size_t SAMPLE_HISTORY_RING_BUFFER_SIZE_BYTES = 30000;
 
 // Logs Samples over time to be downloaded
@@ -131,5 +133,7 @@ private:
 
   size_t mSampleSizeBytes = 0;
 };
+
+} // namespace sensirion::upt::ble_server
 
 #endif /* SAMPLE_HISTORY_RING_BUFFER */
