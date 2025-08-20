@@ -11,7 +11,7 @@ public:
       : IBleServiceProvider(bleLibrary) {}
   bool begin() override;
 
-  void setBatteryLevel(int value) const;
+  void setBatteryLevel(uint8_t value) const;
 };
 
 #endif // ARDUINO_UPT_BLE_SERVER_BATTERY_BLE_SERVICE_H

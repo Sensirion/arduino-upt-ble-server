@@ -15,7 +15,7 @@ public:
 
   bool begin() override;
 
-  void registerFrcRequestCallback(const frc_request_callback_t &callback) const;
+  void registerFrcRequestCallback(const frc_request_callback_t callback) const;
 
 private:
   bool mFrcRequested = false;

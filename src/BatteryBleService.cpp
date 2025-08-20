@@ -10,6 +10,6 @@ bool BatteryBleService::begin() {
   return true;
 }
 
-void BatteryBleService::setBatteryLevel(const int value) const {
-  mBleLibrary.characteristicSetValue(BATTERY_LEVEL_UUID, value);
+void BatteryBleService::setBatteryLevel(const uint8_t value) const {
+  mBleLibrary.characteristicSetValue(BATTERY_LEVEL_UUID, &value, 1);
 }

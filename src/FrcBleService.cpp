@@ -11,8 +11,9 @@ bool FrcBleService::begin() {
 }
 
 void FrcBleService::registerFrcRequestCallback(
-    const frc_request_callback_t &callback) const {
-  auto onFRCRequest = [&](const std::string &value) {
+    // ReSharper disable once CppPassValueParameterByConstReference
+    const frc_request_callback_t callback) const {
+  auto onFRCRequest = [=](const std::string &value) {
     // co2 level is encoded in lower two bytes, little endian
     // the first two bytes are obfuscation and can be ignored
     const uint16_t referenceCO2Level = value[2] | (value[3] << 8);
