@@ -46,7 +46,10 @@ inline Permission operator|(Permission a, Permission b) {
                                  static_cast<uint8_t>(b));
 }
 
-inline void operator|=(Permission &a, const Permission b) { a = a | b; }
+inline Permission &operator|=(Permission &a, const Permission b) {
+  a = a | b;
+  return a;
+}
 
 inline bool operator==(Permission a, Permission b) {
   return (static_cast<uint8_t>(a) & static_cast<uint8_t>(b)) != 0;

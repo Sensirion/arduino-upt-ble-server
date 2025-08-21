@@ -48,8 +48,8 @@ public:
                         const core::DataType dataType = core::T_RH_V3)
       : mBleLibrary{libraryWrapper},
         mSampleConfig{core::sampleConfigSelector.at(dataType)},
-        mDownloadBleService{DownloadBleService(mBleLibrary, mSampleConfig)},
-        mBleAdvertisement{BleAdvertisement(mBleLibrary, mSampleConfig)} {};
+        mDownloadBleService{mBleLibrary, mSampleConfig},
+        mBleAdvertisement{mBleLibrary, mSampleConfig} {};
 
   void begin();
 
