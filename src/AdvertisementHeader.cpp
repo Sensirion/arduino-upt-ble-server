@@ -1,5 +1,7 @@
 #include "AdvertisementHeader.h"
 
+namespace sensirion::upt::ble_server {
+
 void AdvertisementHeader::writeCompanyId(const uint16_t companyID) {
   write16BitLittleEndian(companyID, 0);
 }
@@ -18,3 +20,5 @@ void AdvertisementHeader::writeDeviceId(const uint8_t deviceIDHigh,
   writeByte(deviceIDHigh, 4);
   writeByte(deviceIDLow, 5);
 }
+
+} // namespace sensirion::upt::ble_server

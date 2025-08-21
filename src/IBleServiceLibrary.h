@@ -33,14 +33,29 @@
 #include <functional>
 #include <string>
 
-enum Permission {
-  READWRITE_PERMISSION,
-  READ_PERMISSION,
-  WRITE_PERMISSION,
-  NOTIFY_PERMISSION
+namespace sensirion::upt::ble_server {
+
+enum class Permission : uint8_t {
+  READ_PERMISSION = 1 << 0,
+  WRITE_PERMISSION = 1 << 1,
+  NOTIFY_PERMISSION = 1 << 2
 };
 
-typedef std::function<void(std::string)> callback_t;
+inline Permission operator|(Permission a, Permission b) {
+  return static_cast<Permission>(static_cast<uint8_t>(a) |
+                                 static_cast<uint8_t>(b));
+}
+
+inline Permission &operator|=(Permission &a, const Permission b) {
+  a = a | b;
+  return a;
+}
+
+inline bool operator==(Permission a, Permission b) {
+  return (static_cast<uint8_t>(a) & static_cast<uint8_t>(b)) != 0;
+}
+
+using ble_service_callback_t = std::function<void(std::string)>;
 
 class IBleServiceLibrary {
 public:
@@ -67,7 +82,11 @@ public:
 
   virtual bool characteristicNotify(const char *uuid) = 0;
 
-  virtual void registerCharacteristicCallback(const char *uuid,
-                                              const callback_t &callback) = 0;
+  virtual void
+  registerCharacteristicCallback(const char *uuid,
+                                 const ble_service_callback_t &callback) = 0;
 };
+
+} // namespace sensirion::upt::ble_server
+
 #endif // I_BLE_SERVICE_LIBRARY_H

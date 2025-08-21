@@ -1,5 +1,7 @@
 #include "Download.h"
 
+namespace sensirion::upt::ble_server {
+
 // DownloadHeader
 void DownloadHeader::setDownloadSampleType(const uint16_t type) {
   write16BitLittleEndian(type, 4);
@@ -31,3 +33,5 @@ void DownloadPacket::writeSampleByte(const uint8_t byte,
   // shift to after downloadSequenceNumber
   writeByte(byte, 2 + positionInSampleData);
 }
+
+} // namespace sensirion::upt::ble_server

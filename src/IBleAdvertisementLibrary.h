@@ -33,6 +33,8 @@
 #define I_BLE_ADVERTISEMENT_LIBRARY_H
 #include <string>
 
+namespace sensirion::upt::ble_server {
+
 class IBleAdvertisementLibrary {
 public:
   virtual ~IBleAdvertisementLibrary() = default;
@@ -43,5 +45,31 @@ public:
   virtual void startAdvertising() = 0;
 
   virtual void stopAdvertising() = 0;
+
+  virtual std::string getDeviceAddress() = 0;
+
+  /**
+   * @param minIntervalMs The minimal advertising interval in ms.
+   * @param maxIntervalMs The maximal advertising interval in ms.
+   * @return true if successful, else false
+   * @note It is not guaranteed that the exact values can be configured.
+   *       Please check the BLE library implementation for details of supported
+   *       values.
+   */
+  virtual bool setAdvertisingInterval(float minIntervalMs, float maxIntervalMs);
+
+  /**
+   * @param minIntervalMs The minimal connection interval in ms.
+   * @param maxIntervalMs The maximal connection interval in ms.
+   * @return true if successful, else false
+   * @note It is not guaranteed that the exact values can be configured.
+   *       Please check the BLE library implementation for details of supported
+   *       values.
+   */
+  virtual bool setPreferredConnectionInterval(float minIntervalMs,
+                                              float maxIntervalMs);
 };
+
+} // namespace sensirion::upt::ble_server
+
 #endif // I_BLE_ADVERTISEMENT_LIBRARY_H

@@ -36,6 +36,8 @@
 
 #include <NimBLECharacteristic.h>
 
+namespace sensirion::upt::ble_server {
+
 struct WrapperPrivateData;
 
 class NimBLELibraryWrapper final : public IBleLibraryWrapper {
@@ -54,6 +56,30 @@ public:
   NimBLELibraryWrapper &operator=(const NimBLELibraryWrapper &other) = delete;
 
   ~NimBLELibraryWrapper() override;
+
+  /**
+   *
+   * @param minIntervalMs The minimal advertising interval in ms.
+   * @param maxIntervalMs The maximal advertising interval in ms.
+   * @return true if successful, else false
+   * @note This parameter needs to be set before the library is initialized.
+   *       The interval in ms will be converted to ticks with a ratio of
+   *       1 tick => 0.625 ms.
+   */
+  bool setAdvertisingInterval(float minIntervalMs,
+                              float maxIntervalMs) override;
+
+  /**
+   *
+   * @param minIntervalMs The minimal connection interval in ms.
+   * @param maxIntervalMs The maximal connection interval in ms.
+   * @return true if successful, else false
+   * @note This parameter needs to be set before the library is initialized.
+   *       The interval in ms will be converted to ticks with a ratio of
+   *       1 tick => 1.25 ms.
+   */
+  bool setPreferredConnectionInterval(float minIntervalMs,
+                                      float maxIntervalMs) override;
 
   void init() override;
 
@@ -88,8 +114,8 @@ public:
 
   bool characteristicNotify(const char *uuid) override;
 
-  void registerCharacteristicCallback(const char *uuid,
-                                      const callback_t &callback) override;
+  void registerCharacteristicCallback(
+      const char *uuid, const ble_service_callback_t &callback) override;
 
   void setProviderCallbacks(IProviderCallbacks *providerCallbacks) override;
 
@@ -103,6 +129,12 @@ private:
 private:
   static WrapperPrivateData *mData;
   static uint mNumberOfInstances;
+  uint16_t mMinAdvertisingIntervalTicks = 800;
+  uint16_t mMaxAdvertisingIntervalTicks = 3200;
+  uint16_t mMinConnectionIntervalTicks = 0x6;
+  uint16_t mMaxConnectionIntervalTicks = 0x12;
 };
+
+} // namespace sensirion::upt::ble_server
 
 #endif /* NIM_BLE_LIBRARY_WRAPPER_H */

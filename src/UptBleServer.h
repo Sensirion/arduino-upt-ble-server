@@ -28,11 +28,62 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef SENSIRION_UPT_BLE_SERVER_H
-#define SENSIRION_UPT_BLE_SERVER_H
+#ifndef UPT_BLE_SERVER_H
+#define UPT_BLE_SERVER_H
 
-#include "Arduino.h"
-#include "NimBLELibraryWrapper.h"
-#include "UptBleServer.h"
+#include "BleAdvertisement.h"
+#include "DownloadBleService.h"
+#include "IBleLibraryWrapper.h"
+#include "IBleServiceProvider.h"
+#include "IProviderCallbacks.h"
+#include "Sensirion_UPT_Core.h"
 
-#endif /* SENSIRION_UPT_BLE_SERVER_H */
+#include <string>
+
+namespace sensirion::upt::ble_server {
+
+class UptBleServer final : public IProviderCallbacks {
+public:
+  explicit UptBleServer(IBleLibraryWrapper &libraryWrapper,
+                        const core::DataType dataType = core::T_RH_V3)
+      : mBleLibrary{libraryWrapper},
+        mSampleConfig{core::sampleConfigSelector.at(dataType)},
+        mDownloadBleService{mBleLibrary, mSampleConfig},
+        mBleAdvertisement{mBleLibrary, mSampleConfig} {};
+
+  void begin();
+
+  [[nodiscard]] String getDeviceIdString() const;
+
+  void setSampleConfig(core::DataType dataType);
+  void writeValueToCurrentSample(float value, core::SignalType signalType);
+  void commitSample();
+  void handleDownload();
+
+  void registerBleServiceProvider(IBleServiceProvider &serviceProvider);
+
+private:
+  IBleLibraryWrapper &mBleLibrary;
+
+  core::SampleConfig mSampleConfig;
+  Sample mCurrentSample;
+
+  DownloadBleService mDownloadBleService;
+  BleAdvertisement mBleAdvertisement;
+  std::vector<IBleServiceProvider *> mBleServiceProviders;
+
+private:
+  void setupBLEInfrastructure();
+
+private:
+  // ProviderCallbacks
+  void onConnect() override;
+
+  void onDisconnect() override;
+
+  void onSubscribe(const std::string &uuid, uint16_t subValue) override;
+};
+
+} // namespace sensirion::upt::ble_server
+
+#endif /* UPT_BLE_SERVER_H */

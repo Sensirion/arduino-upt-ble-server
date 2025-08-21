@@ -1,0 +1,39 @@
+name: PIO Lib
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+
+jobs:
+  PlatformIO-Check:
+    uses: sensirion/.github/.github/workflows/upt.platformio.check.yml@main
+    with:
+      pio-environment-list: '["BleAdvertisementSamples", "BleGadgetWithSettings", "BleGadgetWithSettings", "BleGadgetWithFrc"]'
+
+  PlatformIO-Build:
+    uses: sensirion/.github/.github/workflows/upt.platformio.build.yml@main
+    needs: PlatformIO-Check
+    with:
+      pio-environment-list: '["BleAdvertisementSamples", "BleGadgetWithSettings", "BleGadgetWithSettings", "BleGadgetWithFrc"]'
+
+  PlatformIO-Package:
+    if: ${{ (github.ref_type != 'tag') && (github.ref_name == 'main') }}
+    needs: PlatformIO-Build
+    uses: sensirion/.github/.github/workflows/upt.platformio.publish.yml@main
+    with:
+      should-publish: false
+
+  PlatformIO-Publish:
+    uses: sensirion/.github/.github/workflows/upt.platformio.publish.yml@main
+    if: github.ref_type == 'tag'
+    needs: PlatformIO-Build
+    with:
+      should-publish: true
+    secrets:
+      pio-registry-token: ${{ secrets.PIO_MKTSW_TOKEN }}

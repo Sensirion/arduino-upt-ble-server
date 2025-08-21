@@ -1,8 +1,10 @@
 #include "SensirionUptBleServer.h"
+#include "SettingsBleService.h"
 
 using namespace sensirion::upt;
 
 ble_server::NimBLELibraryWrapper lib;
+ble_server::SettingsBleService settingsBleService(lib);
 ble_server::UptBleServer uptBleServer(lib, core::T_RH_CO2_ALT);
 
 uint16_t t = 0;
@@ -12,9 +14,21 @@ uint16_t co2 = 0;
 static int64_t lastMeasurementTimeMs = 0;
 static int measurementIntervalMs = 1000;
 
+void onWifiChanged(const std::string &ssid, const std::string &password) {
+  Serial.print("Wifi changed to ssid: ");
+  Serial.println(ssid.c_str());
+  Serial.print("Wifi changed to password: ");
+  Serial.println(password.c_str());
+}
+
 void setup() {
   Serial.begin(115200);
   delay(1000); // Wait for Serial monitor to start
+
+  // setup settings ble services
+  settingsBleService.registerWifiChangedCallback(onWifiChanged);
+  settingsBleService.setAltDeviceName("Mock Gadget");
+  uptBleServer.registerBleServiceProvider(settingsBleService);
 
   // Initialize the GadgetBle Library
   uptBleServer.begin();

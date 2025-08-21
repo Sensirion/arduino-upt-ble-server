@@ -34,6 +34,8 @@
 
 #include "ByteArray.h"
 
+namespace sensirion::upt::ble_server {
+
 static constexpr size_t SAMPLE_SIZE_BYTES = 12;
 
 // Holds sensor values following the set SampleConfig
@@ -43,5 +45,7 @@ public:
 
   void setByte(uint8_t byte, size_t position);
 };
+
+} // namespace sensirion::upt::ble_server
 
 #endif /* SAMPLES_H */
