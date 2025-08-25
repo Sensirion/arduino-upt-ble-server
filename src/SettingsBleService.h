@@ -15,6 +15,7 @@ class SettingsBleService final : public IBleServiceProvider {
 public:
   explicit SettingsBleService(IBleServiceLibrary &bleLibrary)
       : IBleServiceProvider(bleLibrary) {}
+
   bool begin() override;
 
   /**

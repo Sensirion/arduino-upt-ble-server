@@ -9,9 +9,13 @@ namespace sensirion::upt::ble_server {
 
 class BleAdvertisement {
 public:
-  explicit BleAdvertisement(IBleAdvertisementLibrary &bleLibrary,
-                            const core::SampleConfig &sampleConfig)
-      : mSampleConfig(sampleConfig), mAdvertisementLibrary(bleLibrary){};
+  explicit BleAdvertisement(
+      IBleAdvertisementLibrary &bleLibrary,
+      const core::SampleConfig &sampleConfig) // NOLINT(*-pass-by-value)
+      : mSampleConfig(sampleConfig), mAdvertisementLibrary(bleLibrary) {};
+
+  // Don't allow copy of BLE advertisement
+  BleAdvertisement &operator=(const BleAdvertisement &&) = delete;
 
   void begin();
 

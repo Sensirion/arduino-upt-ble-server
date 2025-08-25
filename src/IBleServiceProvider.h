@@ -50,6 +50,9 @@ public:
 
   virtual ~IBleServiceProvider() = default;
 
+  // Don't allow copy of services
+  IBleServiceProvider &operator=(const IBleServiceProvider &&) = delete;
+
   /*
    * Create BLE services and characteristics.
    * Set initial values on characteristics.
