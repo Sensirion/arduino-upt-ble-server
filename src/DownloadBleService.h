@@ -27,13 +27,13 @@ class DownloadBleService final : IBleServiceProvider {
 public:
   explicit DownloadBleService(IBleServiceLibrary &bleLibrary,
                               const core::SampleConfig &sampleConfig)
-      : IBleServiceProvider(bleLibrary), mSampleConfig(sampleConfig){};
+      : IBleServiceProvider(bleLibrary), mSampleConfig(sampleConfig) {};
 
   bool begin() override;
 
   void commitSample(const Sample &sample);
   void handleDownload();
-  bool isDownloading() const;
+  [[nodiscard]] bool isDownloading() const;
   void setSampleConfig(const core::SampleConfig &sampleConfig) {
     mSampleConfig = sampleConfig;
     mSampleHistory.setSampleSize(mSampleConfig.sampleSizeBytes);
@@ -58,11 +58,12 @@ private:
   uint64_t mLatestHistoryTimeStampAtDownloadStart = 0;
 
 private:
-  DownloadHeader buildDownloadHeader() const;
+  [[nodiscard]] DownloadHeader buildDownloadHeader() const;
 
   DownloadPacket buildDownloadPacket();
 
-  uint32_t numberOfPacketsRequired(uint32_t numberOfSamples) const;
+  [[nodiscard]] uint32_t
+  numberOfPacketsRequired(uint32_t numberOfSamples) const;
 };
 
 } // namespace sensirion::upt::ble_server

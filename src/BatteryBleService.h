@@ -11,6 +11,7 @@ class BatteryBleService final : public IBleServiceProvider {
 public:
   explicit BatteryBleService(IBleServiceLibrary &bleLibrary)
       : IBleServiceProvider(bleLibrary) {}
+
   bool begin() override;
 
   void setBatteryLevel(uint8_t value) const;

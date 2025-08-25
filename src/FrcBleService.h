@@ -17,7 +17,7 @@ public:
 
   bool begin() override;
 
-  void registerFrcRequestCallback(const frc_request_callback_t callback) const;
+  void registerFrcRequestCallback(frc_request_callback_t callback) const;
 };
 
 } // namespace sensirion::upt::ble_server

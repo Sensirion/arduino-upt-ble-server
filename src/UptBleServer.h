@@ -51,6 +51,9 @@ public:
         mDownloadBleService{mBleLibrary, mSampleConfig},
         mBleAdvertisement{mBleLibrary, mSampleConfig} {};
 
+  // Don't allow copy of UptBleServer
+  UptBleServer& operator=(const UptBleServer&&) = delete;
+
   void begin();
 
   [[nodiscard]] String getDeviceIdString() const;
