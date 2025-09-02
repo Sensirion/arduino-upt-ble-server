@@ -47,7 +47,7 @@ public:
   explicit UptBleServer(IBleLibraryWrapper &libraryWrapper,
                         const core::DataType dataType = core::T_RH_V3)
       : mBleLibrary{libraryWrapper},
-        mSampleConfig{core::sampleConfigSelector.at(dataType)},
+        mSampleConfig{core::GetSampleConfiguration(dataType)},
         mDownloadBleService{mBleLibrary, mSampleConfig},
         mBleAdvertisement{mBleLibrary, mSampleConfig} {};
 
