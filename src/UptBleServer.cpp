@@ -55,7 +55,7 @@ void UptBleServer::registerBleServiceProvider(
 }
 
 void UptBleServer::setSampleConfig(const core::DataType dataType) {
-  mSampleConfig = core::sampleConfigSelector.at(dataType);
+  mSampleConfig = core::GetSampleConfiguration(dataType);
   mBleAdvertisement.setSampleConfig(mSampleConfig);
   mDownloadBleService.setSampleConfig(mSampleConfig);
 }
