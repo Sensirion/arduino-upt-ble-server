@@ -1,7 +1,7 @@
 # Arduino UPT BLE Server
 
 The UPT BLE Server module allows you to send sensor data through the Bluetooth Low Energy advertisement headers.
-The data in the advertisement header is compatible with the Sensirion MyAmbience app.
+The data in the advertisement header is compatible with the **Sensirion MyAmbience** app.
 
 The module also creates the services and characteristics with support for the
 following features:
@@ -22,7 +22,7 @@ e.g. [ESP32-DevKitC-32D](https://www.digikey.com/en/products/detail/espressif-sy
 This library requires standard library compatibility.
 Some boards such as Arduino AVR Uno do not ship with this functionality.
 
-### Arduino
+### Arduino IDE
 
 Install the software from the [official website](https://www.arduino.cc/en/software) and
 read [this short tutorial](https://docs.arduino.cc/software/ide-v2/tutorials/getting-started-ide-v2/) to get an
@@ -174,6 +174,19 @@ Notes:
   are added by creating their provider and registering it with the server.
 * You can register multiple service providers by calling registerBleServiceProvider for each one before begin().
 * Call handleDownload() regularly in loop() to serve download requests over BLE.
+
+
+## Mobile Application
+
+Download the **Sensirion MyAmbience** App to monitor the signal created by your device, plot the sensor values and share/export the data:
+
+[<img src="docs/images/google-play-badge.png" height="50">](https://play.google.com/store/apps/details?id=com.sensirion.myam)[<img src="docs/images/download_on_appstore.png" height="50">](https://apps.apple.com/ch/app/id1529131572)
+
+## Frequently asked question (FAQ)
+### How can I read the BLE signal using my own application ?
+If you want to create your own mobile application you can learn more about the used BLE advertisment packages [here](https://sensirion.github.io/ble-services/#/).
+This dedicated documentation page covers all the specifications of all the services, advertisment headers, and download packets.
+
 
 ## License
 
