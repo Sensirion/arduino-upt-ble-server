@@ -26,7 +26,7 @@ jobs:
 
   PlatformIO-PackageAndPublish:
     name: PlatformIO - Package and Publish on Tag
-    if: ${{ (github.ref_type == 'tag') || (github.ref_name == 'master') }}
+    if: ${{ (github.ref_type == 'tag') || (github.ref_name == 'main') }}
     needs: PlatformIO-Build
     uses: sensirion/.github/.github/workflows/upt.platformio.publish.yml@main
     with:
