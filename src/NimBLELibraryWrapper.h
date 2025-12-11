@@ -119,6 +119,8 @@ public:
 
   void setProviderCallbacks(IProviderCallbacks *providerCallbacks) override;
 
+  bool hasConnectedDevices() override;
+
 private:
   static void release();
 

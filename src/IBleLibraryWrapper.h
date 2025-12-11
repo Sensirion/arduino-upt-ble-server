@@ -39,14 +39,32 @@ namespace sensirion::upt::ble_server {
 
 const auto GADGET_NAME = "S";
 
+/**
+ * @brief Aggregated BLE library abstraction used by the UPT server.
+ *
+ * Combines GAP advertisement control and GATT service control and exposes a
+ * minimal set of functions required by the UPT BLE server.
+ */
 // abstract class
 class IBleLibraryWrapper : public IBleServiceLibrary,
                            public IBleAdvertisementLibrary {
 public:
+  /**
+   * @brief Initialize the BLE stack/library.
+   */
   virtual void init() = 0;
 
+  /**
+   * @brief Create or obtain the underlying BLE server instance.
+   */
   virtual void createServer() = 0;
 
+  /**
+   * @brief Register callbacks to be notified about connect/disconnect and
+   *        subscription changes.
+   * @param providerCallbacks Callback interface implemented by the provider
+   *        (e.g. `UptBleServer`).
+   */
   virtual void setProviderCallbacks(IProviderCallbacks *providerCallbacks) = 0;
 };
 

@@ -49,6 +49,10 @@ void UptBleServer::commitSample() {
 
 void UptBleServer::handleDownload() { mDownloadBleService.handleDownload(); }
 
+bool UptBleServer::hasConnectedDevices() const {
+  return mBleLibrary.hasConnectedDevices();
+}
+
 void UptBleServer::registerBleServiceProvider(
     IBleServiceProvider &serviceProvider) {
   mBleServiceProviders.push_back(&serviceProvider);

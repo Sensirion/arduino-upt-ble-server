@@ -35,17 +35,32 @@
 
 namespace sensirion::upt::ble_server {
 
+/**
+ * @brief Interface for configuring BLE advertising and connection parameters.
+ */
 class IBleAdvertisementLibrary {
 public:
   virtual ~IBleAdvertisementLibrary() = default;
 
-  // set device name and manufacturer data
+  /**
+   * @brief Set the advertisement payload (e.g. name and manufacturer data).
+   * @param data Raw advertisement payload to be used by the implementation.
+   */
   virtual void setAdvertisingData(const std::string &data) = 0;
 
+  /**
+   * @brief Start advertising.
+   */
   virtual void startAdvertising() = 0;
 
+  /**
+   * @brief Stop advertising.
+   */
   virtual void stopAdvertising() = 0;
 
+  /**
+   * @brief Get the BLE device address as a string.
+   */
   virtual std::string getDeviceAddress() = 0;
 
   /**

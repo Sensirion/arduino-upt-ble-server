@@ -310,6 +310,9 @@ void NimBLELibraryWrapper::setProviderCallbacks(
     IProviderCallbacks *providerCallbacks) {
   mData->providerCallbacks = providerCallbacks;
 }
+bool NimBLELibraryWrapper::hasConnectedDevices() {
+  return mData->pBLEServer->getConnectedCount() > 0;
+}
 
 template <typename Container, typename UuidGetter>
 typename Container::value_type findByUuid(Container &container,
