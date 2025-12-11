@@ -147,6 +147,14 @@ public:
    * @return true if at least one device is connected.
    */
   virtual bool hasConnectedDevices() = 0;
+
+  /**
+   * @brief Configure the default connection timeout for newly connected
+   *        devices.
+   *
+   * @param timeoutMs the timeout in milliseconds
+   */
+  virtual void setDefaultConnectionTimeout(uint16_t timeoutMs) = 0;
 };
 
 } // namespace sensirion::upt::ble_server

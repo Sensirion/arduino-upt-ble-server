@@ -21,6 +21,12 @@ struct WrapperPrivateData final : NimBLECharacteristicCallbacks,
   std::vector<NimBLEService *> services{};
   std::vector<NimBLECharacteristic *> characteristics{};
 
+  // connection parameters
+  uint16_t minConnectionIntervalTicks = 0;
+  uint16_t maxConnectionIntervalTicks = 0;
+  uint16_t defaultConnectionTimeoutTicks = 0;
+  uint16_t latency = 3; // number of packets it is allowed to skip
+
   // Handle callbacks on characteristics write
   void initCallbackForCharacteristic(const std::string &uuid);
   void registerCallback(const char *uuid,
@@ -48,6 +54,9 @@ void WrapperPrivateData::onConnect(NimBLEServer *serverInst,
   if (providerCallbacks == nullptr) {
     return;
   }
+  pBLEServer->updateConnParams(
+      connInfo.getConnHandle(), minConnectionIntervalTicks,
+      maxConnectionIntervalTicks, latency, defaultConnectionTimeoutTicks);
   providerCallbacks->onConnect();
 }
 
@@ -102,6 +111,11 @@ WrapperPrivateData *NimBLELibraryWrapper::mData = nullptr;
 NimBLELibraryWrapper::NimBLELibraryWrapper() {
   if (mNumberOfInstances == 0) {
     mData = new WrapperPrivateData();
+    // initialize connection parameters
+    mData->minConnectionIntervalTicks = mMinConnectionIntervalTicks;
+    mData->maxConnectionIntervalTicks = mMaxConnectionIntervalTicks;
+    mData->defaultConnectionTimeoutTicks = mDefaultConnectionTimeoutTicks;
+
     mData->services.reserve(INITIAL_NUMBER_OF_SERVICES);
     mData->characteristics.reserve(INITIAL_NUMBER_OF_CHARACTERISTICS);
     ++mNumberOfInstances;
@@ -146,6 +160,10 @@ bool NimBLELibraryWrapper::setPreferredConnectionInterval(
 
   mMinConnectionIntervalTicks = static_cast<uint16_t>(minIntervalMs / 0.625);
   mMaxConnectionIntervalTicks = static_cast<uint16_t>(maxIntervalMs / 0.625);
+
+  mData->minConnectionIntervalTicks = mMinConnectionIntervalTicks;
+  mData->maxConnectionIntervalTicks = mMaxConnectionIntervalTicks;
+
   return true;
 }
 
@@ -312,6 +330,11 @@ void NimBLELibraryWrapper::setProviderCallbacks(
 }
 bool NimBLELibraryWrapper::hasConnectedDevices() {
   return mData->pBLEServer->getConnectedCount() > 0;
+}
+void NimBLELibraryWrapper::setDefaultConnectionTimeout(
+    const uint16_t timeoutMs) {
+  mDefaultConnectionTimeoutTicks = static_cast<uint16_t>(timeoutMs / 10);
+  mData->defaultConnectionTimeoutTicks = mDefaultConnectionTimeoutTicks;
 }
 
 template <typename Container, typename UuidGetter>

@@ -94,6 +94,17 @@ public:
   [[nodiscard]] bool hasConnectedDevices() const;
 
   /**
+   * @brief Configure the default connection timeout
+   *
+   * The connection timeout is configured once a connection is established.
+   * Make sure to configure the timeout before starting the server to make
+   * sure it applies to every new connection.
+   *
+   * @param timeoutMs connection timeout in milliseconds
+   */
+  void setDefaultConnectionTimeout(uint16_t timeoutMs) const;
+
+  /**
    * @brief Set the sample configuration by data type.
    *
    * Updates internal encoding/offsets for samples and propagates the

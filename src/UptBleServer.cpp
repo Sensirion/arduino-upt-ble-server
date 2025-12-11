@@ -52,6 +52,9 @@ void UptBleServer::handleDownload() { mDownloadBleService.handleDownload(); }
 bool UptBleServer::hasConnectedDevices() const {
   return mBleLibrary.hasConnectedDevices();
 }
+void UptBleServer::setDefaultConnectionTimeout(const uint16_t timeoutMs) const {
+  mBleLibrary.setDefaultConnectionTimeout(timeoutMs);
+}
 
 void UptBleServer::registerBleServiceProvider(
     IBleServiceProvider &serviceProvider) {
