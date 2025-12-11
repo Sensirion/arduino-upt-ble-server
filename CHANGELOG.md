@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+## [1.2.0] - 2025-12-11
+
+### Added
+
 - Interface to check if devices are connected
 - Interface to configure default connection timeout
 - Documentation for BleServer and interfaces
