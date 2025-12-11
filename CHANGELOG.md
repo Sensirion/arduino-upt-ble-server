@@ -7,9 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Interface to check if devices are connected
+- Interface to configure default connection timeout
+- Documentation for BleServer and interfaces
+
+### Changed
+
+- Update to UPT Core 1.1.0
+
 ## [1.1.0] - 2025-10-01
 
 ### Changed
+
 - Moved to stable UPT Core 1.0.0
 
 ## [1.0.0] - 2025-09-29

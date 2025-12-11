@@ -34,6 +34,12 @@
 
 namespace sensirion::upt::ble_server {
 
+/**
+ * @brief Interface for components that provide BLE GATT services.
+ *
+ * Implementations are responsible for creating services/characteristics,
+ * registering callbacks and maintaining any related internal state.
+ */
 class IBleServiceProvider {
   /*
    * Responsibilities of a Ble Service Provider
@@ -45,6 +51,10 @@ class IBleServiceProvider {
    */
 
 public:
+  /**
+   * @brief Construct a new provider with access to the BLE service library.
+   * @param bleLibrary Reference to the service library used for GATT ops.
+   */
   explicit IBleServiceProvider(IBleServiceLibrary &bleLibrary)
       : mBleLibrary(bleLibrary){};
 
@@ -53,21 +63,35 @@ public:
   // Don't allow copy of services
   IBleServiceProvider &operator=(const IBleServiceProvider &&) = delete;
 
-  /*
-   * Create BLE services and characteristics.
-   * Set initial values on characteristics.
-   * Start BLE services
-   * Register callbacks
+  /**
+   * @brief Initialize provider: create services/characteristics, set defaults,
+   *        start services and register callbacks.
+   * @return true on success, false otherwise.
    */
   virtual bool begin() = 0;
 
+  /**
+   * @brief Notifies the provider that a central has connected.
+   */
   virtual void onConnect(){};
 
+  /**
+   * @brief Notifies the provider that a central has disconnected.
+   */
   virtual void onDisconnect(){};
 
+  /**
+   * @brief Notifies the provider about subscription changes for a
+   *        characteristic.
+   * @param uuid Characteristic UUID.
+   * @param subValue Subscription value/flags provided by the stack.
+   */
   virtual void onSubscribe(const std::string &uuid, uint16_t subValue){};
 
 protected:
+  /**
+   * @brief Reference to the service library used to perform GATT operations.
+   */
   IBleServiceLibrary &mBleLibrary;
 };
 

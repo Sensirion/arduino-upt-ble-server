@@ -42,8 +42,24 @@
 
 namespace sensirion::upt::ble_server {
 
+/**
+ * @brief High-level BLE server for Sensirion UPT gadgets.
+ *
+ * This class wires together the BLE library wrapper, advertisement handling
+ * and built-in services (e.g. download service). It exposes a compact API to
+ * initialize BLE, feed samples, and register additional BLE service providers.
+ */
 class UptBleServer final : public IProviderCallbacks {
 public:
+  /**
+   * @brief Construct a new UptBleServer.
+   *
+   * @param libraryWrapper Reference to the BLE library abstraction used by
+   *        the server. The reference must remain valid for the lifetime of
+   *        the server.
+   * @param dataType Initial sample data type configuration (default
+   *        `core::T_RH_V3`).
+   */
   explicit UptBleServer(IBleLibraryWrapper &libraryWrapper,
                         const core::DataType dataType = core::T_RH_V3)
       : mBleLibrary{libraryWrapper},
@@ -54,15 +70,85 @@ public:
   // Don't allow copy of UptBleServer
   UptBleServer& operator=(const UptBleServer&&) = delete;
 
+  /**
+   * @brief Initialize the BLE stack, services and advertising.
+   *
+   * Creates the BLE server, initializes the download service and any
+   * registered providers, and starts the advertisement setup.
+   */
   void begin();
 
+  /**
+   * @brief Get a short device identifier derived from the BLE MAC address.
+   *
+   * @return Short device ID string (e.g. last bytes of the MAC) suitable for
+   *         displaying in UIs.
+   */
   [[nodiscard]] String getDeviceIdString() const;
 
+  /**
+   * @brief Check whether any central device is currently connected.
+   *
+   * @return true if at least one connection is active, false otherwise.
+   */
+  [[nodiscard]] bool hasConnectedDevices() const;
+
+  /**
+   * @brief Configure the default connection timeout
+   *
+   * The connection timeout is configured once a connection is established.
+   * Make sure to configure the timeout before starting the server to make
+   * sure it applies to every new connection.
+   *
+   * @param timeoutMs connection timeout in milliseconds
+   */
+  void setDefaultConnectionTimeout(uint16_t timeoutMs) const;
+
+  /**
+   * @brief Set the sample configuration by data type.
+   *
+   * Updates internal encoding/offsets for samples and propagates the
+   * configuration to advertisement and download services.
+   *
+   * @param dataType Desired sample data type configuration.
+   */
   void setSampleConfig(core::DataType dataType);
+
+  /**
+   * @brief Write a single signal value into the current sample buffer.
+   *
+   * Invalid numbers (NaN) are ignored. If the provided signal type is not part
+   * of the active sample configuration, the call is ignored.
+   *
+   * @param value Floating point value to encode and write.
+   * @param signalType Signal type designating the target slot.
+   */
   void writeValueToCurrentSample(float value, core::SignalType signalType);
+
+  /**
+   * @brief Finalize and publish the current sample.
+   *
+   * Commits the buffered sample to advertisement and download services and
+   * prepares the buffer for the next sample.
+   */
   void commitSample();
+
+  /**
+   * @brief Handle pending download requests.
+   *
+   * Call this periodically from the main loop to service download operations.
+   */
   void handleDownload();
 
+  /**
+   * @brief Register an additional BLE service provider.
+   *
+   * The provider's lifetime must outlive the server. Registration allows the
+   * server to initialize the provider and forward connection/subscription
+   * events.
+   *
+   * @param serviceProvider The provider to register.
+   */
   void registerBleServiceProvider(IBleServiceProvider &serviceProvider);
 
 private:

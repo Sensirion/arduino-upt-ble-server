@@ -35,12 +35,28 @@
 
 namespace sensirion::upt::ble_server {
 
+/**
+ * @brief Callback interface for BLE connection and subscription events.
+ */
 class IProviderCallbacks {
 public:
   virtual ~IProviderCallbacks() = default;
 
+  /**
+   * @brief Called when a central connects.
+   */
   virtual void onConnect() = 0;
+
+  /**
+   * @brief Called when a central disconnects.
+   */
   virtual void onDisconnect() = 0;
+
+  /**
+   * @brief Called when a subscription state changes for a characteristic.
+   * @param uuid Characteristic UUID.
+   * @param subValue Subscription flags/value as provided by the BLE stack.
+   */
   virtual void onSubscribe(const std::string &uuid, uint16_t subValue) = 0;
 };
 

@@ -119,6 +119,10 @@ public:
 
   void setProviderCallbacks(IProviderCallbacks *providerCallbacks) override;
 
+  bool hasConnectedDevices() override;
+
+  void setDefaultConnectionTimeout(uint16_t timeoutMs) override;
+
 private:
   static void release();
 
@@ -133,6 +137,7 @@ private:
   uint16_t mMaxAdvertisingIntervalTicks = 3200;
   uint16_t mMinConnectionIntervalTicks = 0x6;
   uint16_t mMaxConnectionIntervalTicks = 0x12;
+  uint16_t mDefaultConnectionTimeoutTicks = 200;
 };
 
 } // namespace sensirion::upt::ble_server
