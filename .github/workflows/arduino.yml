@@ -14,3 +14,4 @@ jobs:
     with:
       expect-arduino-examples: true
       lint-lib-manager-check: update
+      dependency-list: "[{'name':'Sensirion UPT Core'}, {'name':'NimBLE-Arduino'}, {'name':'Sensirion I2C SEN66'}, {'source-path': './'}]"
