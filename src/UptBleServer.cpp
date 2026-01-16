@@ -1,7 +1,5 @@
 #include "UptBleServer.h"
 
-#include "DownloadBleService.h"
-
 #include <cmath>
 
 namespace sensirion::upt::ble_server {

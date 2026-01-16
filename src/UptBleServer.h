@@ -32,7 +32,7 @@
 #define UPT_BLE_SERVER_H
 
 #include "BleAdvertisement.h"
-#include "DownloadBleService.h"
+#include "bleServices/DownloadBleService.h"
 #include "IBleLibraryWrapper.h"
 #include "IBleServiceProvider.h"
 #include "IProviderCallbacks.h"

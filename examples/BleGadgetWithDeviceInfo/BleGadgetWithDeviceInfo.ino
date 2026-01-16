@@ -1,5 +1,5 @@
 #include "SensirionUptBleServer.h"
-#include "DeviceInformationBleService.h"
+#include "bleServices/DeviceInformationBleService.h"
 
 using namespace sensirion::upt;
 

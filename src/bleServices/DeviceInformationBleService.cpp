@@ -1,4 +1,4 @@
-#include "DeviceInformationBleService.h"
+#include "bleServices/DeviceInformationBleService.h"
 #include <cstring>
 
 namespace sensirion::upt::ble_server {
