@@ -7,9 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-01-16
+
 ### Added
-- A SEN66 example sketch
+- A SEN66 example sketch.
+- Device Information service.
+
 ### Changed
+- Reorganized codebase.
 
 ## [1.2.0] - 2025-12-11
 
