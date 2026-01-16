@@ -21,9 +21,14 @@ public:
 
   bool begin() override;
 
-  void setManufacturerName(std::string manufacturer) const;
-  void setModelNumber(std::string modelNumber) const;
-  void setFirmwareRevision(std::string firmwareRevision) const;
+  void setManufacturerName(std::string manufacturer);
+  void setModelNumber(std::string modelNumber);
+  void setFirmwareRevision(std::string firmwareRevision);
+
+private:
+  std::string mManufacturerName = DEFAULT_MANUFACTURER_NAME;
+  std::string mModelNumber = DEFAULT_MODEL_NUMBER;
+  std::string mFirmwareRevision = DEFAULT_FIRMWARE_REVISION;
 };
 
 } // namespace sensirion::upt::ble_server
