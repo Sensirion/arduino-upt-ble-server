@@ -7,13 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.3.1 - 2026-03-26
+
+### Changed
+
+- Fix ad type from sample config not being used
+
 ## [1.3.0] - 2026-01-16
 
 ### Added
+
 - A SEN66 example sketch.
 - Device Information service.
 
 ### Changed
+
 - Reorganized codebase.
 
 ## [1.2.0] - 2025-12-11
