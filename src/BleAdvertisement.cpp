@@ -5,7 +5,8 @@ namespace sensirion::upt::ble_server {
 void BleAdvertisement::begin() {
   // Fill advertisement header
   mAdvertisementHeader.writeCompanyId(0x06D5);
-  mAdvertisementHeader.writeSensirionAdvertisementType(0x00);
+  mAdvertisementHeader.writeSensirionAdvertisementType(
+      mSampleConfig.sensirionAdvertisementSampleType);
 
   // Use part of MAC address as device id
   const std::string macAddress = mAdvertisementLibrary.getDeviceAddress();
