@@ -1,6 +1,7 @@
 #include "NimBLELibraryWrapper.h"
 #include <NimBLEDevice.h>
 #include <NimBLEServer.h>
+#include <algorithm>
 
 namespace sensirion::upt::ble_server {
 
